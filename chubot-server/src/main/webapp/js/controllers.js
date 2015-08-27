@@ -3,6 +3,9 @@
 
 //called the Angular object to create a module named myApp
 var myApp = angular.module("myApp", [],function($httpProvider) {
+    // http://victorblog.com/2012/12/20/make-angularjs-http-service-behave-like-jquery-ajax/
+    // Make AngularJS $http service behave like jQuery.ajax()
+    
     // Use x-www-form-urlencoded Content-Type
     $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 
@@ -63,8 +66,10 @@ myApp.controller("JobsController", function ($scope, $http, $filter) {
         }
         var myData = {data: newJob};
         $http.post('/api/spider/job/commitJob',myData)
-            .success(function(data){
-                alert("success");
+            .success(function(data, status, headers, config){
+                alert("success to commit job");
+            }).error(function(data,status,headers,config){
+                alert("fail to commit job");
             });
     };
 
@@ -80,4 +85,16 @@ myApp.controller("AgentsController", function ($scope, $http, $filter) {
         });
     };
     $scope.refreshAgents();
+});
+
+myApp.controller("AdminController", function($scope, $http, $filter){
+    $scope.addJars=function($event, jars){
+        var myData = {data: jars};
+        $http.post('/admin/addJars', myData)
+            .success(function(data, status, headers, config){
+                alert("success to add jars");
+            }).error(function(data,status,headers,config){
+                alert("fail to add jars");
+            });
+    };
 });

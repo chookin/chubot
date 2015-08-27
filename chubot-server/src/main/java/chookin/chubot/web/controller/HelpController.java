@@ -7,6 +7,6 @@ import com.jfinal.core.Controller;
  */
 public class HelpController extends Controller {
     public void index() {
-        renderText("Hello World to Chubot.");
+        render("/help.html");
     }
 }

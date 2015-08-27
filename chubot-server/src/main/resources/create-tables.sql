@@ -13,8 +13,8 @@ create table if not exists job(
 
 create table if not exists agent(
   id int not NULL COMMENT 'agent id',
-  job varchar(2048) NOT NULL COMMENT 'job statement',
+  address varchar(128) NOT NULL COMMENT 'address',
   startTime DATETIME NOT NULL COMMENT 'start time',
-  endTime DATETIME NOT NULL COMMENT 'end time',
+  endTime DATETIME COMMENT 'end time',
   PRIMARY KEY (id)
 );

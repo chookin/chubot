@@ -26,10 +26,10 @@ public class ChubotServerHandler extends SimpleChannelInboundHandler<MasterProto
     private final ReadWriteLock agentsLock = new ReentrantReadWriteLock();
     private final AtomicLong protoId = new AtomicLong();
 
-    public void send(String rmMethod, String paras){
+    public void send(String methodName, String paras){
         MasterProto proto = MasterProto.newBuilder()
                 .setId(protoId.incrementAndGet())
-                .setMethod(rmMethod)
+                .setMethod(methodName)
                 .setParas(paras)
                 .build();
         send(proto);
@@ -63,7 +63,7 @@ public class ChubotServerHandler extends SimpleChannelInboundHandler<MasterProto
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         Channel channel = ctx.channel();
-        Agent agent = Agent.newOne().set("address", channel.remoteAddress());
+        Agent agent = Agent.newOne().set("address", channel.remoteAddress().toString());
         agentsLock.writeLock().lock();
         try{
             agents.put(channel, agent);
@@ -85,7 +85,7 @@ public class ChubotServerHandler extends SimpleChannelInboundHandler<MasterProto
         }finally {
             agentsLock.writeLock().unlock();
         }
-        agent.set("endTime", new Date()).save();
+        agent.set("endTime", new Date()).update();
     }
 
     @Override

@@ -13,7 +13,7 @@
             <h1>Agents列表</h1>
             <div class="panel panel-primary table-responsive">
                 <div class="panel-body col-lg-2">
-                    <button id="refreshHistory" type="button" ng-click="refreshHistory($event, newJob)">
+                    <button id="refreshAgents" type="button" ng-click="refreshAgents()">
                         <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Refresh
                     </button>
                 </div>
@@ -23,7 +23,7 @@
                         <th class="col-lg-1">SN</th>
                         <th class="col-lg-1">Id</th>
                         <th class="col-lg-1">Address</th>
-                        <th class="col-lg-1">startTime</th>
+                        <th class="col-lg-2">startTime</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -33,7 +33,7 @@
                             <a ng-href="/agents/agent?id={{item.id}}">{{item.id}}</a>
                         </td>
                         <td class="col-lg-1">{{item.address}}</td>
-                        <td class="col-lg-1">{{item.startTime}}</td>
+                        <td class="col-lg-2">{{item.startTime}}</td>
                     </tr>
                     </tbody>
                 </table>

@@ -44,20 +44,24 @@ public class ChubotAgentHandler extends SimpleChannelInboundHandler<MasterProto>
         }
     }
 
-    public void addJar(String jarPath){
-        try {
-            LangHelper.addJar2ClassLoader(jarPath);
-        } catch (IOException e) {
-            LOG.error(null, e);
-        }
-    }
-
     public Collection<Job> getJobs(Job.Status status){
         historyLock.readLock().lock();
         try{
             return historyJobs.stream().filter(job -> job.status().equals(status)).collect(Collectors.toList());
         }finally {
             historyLock.readLock().unlock();
+        }
+    }
+
+    public void addJars(String jarsPath){
+        try {
+            String[] arr = jarsPath.split("\\n|;");
+            for(String jarPath: arr) {
+                LangHelper.addJar2ClassLoader(jarPath);
+                LOG.info("add "+jarPath + " to classpath");
+            }
+        } catch (IOException e) {
+            LOG.error(null, e);
         }
     }
 }

@@ -1,0 +1,9 @@
+body {
+    /*top right bottom left*/
+    margin: 49px 36px 9px 36px;
+}
+
+.nav > li > a {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 16px;
+}

@@ -1,0 +1,15 @@
+//$ protoc --version
+//libprotoc 2.5.0
+
+//protoc command.proto --java_out .
+
+option java_package = "chookin.chubot.proto";
+option java_outer_classname = "ChubotProtos";
+option java_generate_equals_and_hash = true;
+option optimize_for = SPEED;
+
+message MasterProto{
+    optional int64 id = 1;
+    required string method = 2;
+    optional string paras = 3;
+}

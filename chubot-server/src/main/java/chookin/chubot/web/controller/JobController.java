@@ -35,19 +35,40 @@ public class JobController extends Controller {
 
     public void job(){
         String id=getPara("id");
-        renderText("Job "+id);
+        renderText("Job " + id);
     }
 
+    @Before(POST.class)
     public void history(){
+        pageByOffset();
+    }
+
+    /**
+     * avoid to use OFFSET or large LIMIT
+     */
+    private void pageByOffset(){
         String keyword=getPara("key");
+        int pageIndex = getParaToInt("pageIndex", 1);
+        if(pageIndex < 1) pageIndex = 1;
+        int pageSize = getParaToInt("pageSize", 100);
+        long total = getParaToInt("total", -1);
+        int offset = (pageIndex - 1)*pageSize;
+        String limit = " limit " + offset + ", " + pageSize;
         String sql;
         if(StringUtils.isNotBlank(keyword)){
-            sql = "select * from job where job like '%" + keyword + "%' order by time asc";
+            sql = "select * from job where job like '%" + keyword + "%'"+limit;
         }else{
-            sql = "select * from job" + " order by time asc";
+            sql = "select * from job" + limit;
         }
         List<Job> history = Job.DAO.find(sql);
         setAttr("items", history);
+        if(total == -1){
+            setAttr("total", historyCount());
+        }
         renderJson();
+    }
+
+    private long historyCount(){
+        return Job.DAO.find("select count(1) as cnt from job").iterator().next().getLong("cnt");
     }
 }

@@ -1,5 +1,6 @@
 package chookin.chubot.web.controller;
 
+import chookin.chubot.server.ChubotServer;
 import com.jfinal.aop.Before;
 import com.jfinal.core.Controller;
 import com.jfinal.ext.interceptor.POST;
@@ -14,7 +15,7 @@ public class AdminController extends Controller {
 
     @Before(POST.class)
     public void addJars(){
-        ControllerHelper.generalPost(getPara("data"));
+        ChubotServer.instance().handler().addJars(getPara("data"));
         renderJson();
     }
 }

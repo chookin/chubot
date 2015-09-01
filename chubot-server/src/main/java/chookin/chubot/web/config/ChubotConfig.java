@@ -4,6 +4,7 @@ import chookin.chubot.server.ChubotServer;
 import chookin.chubot.web.controller.*;
 import chookin.chubot.web.model.Agent;
 import chookin.chubot.web.model.Job;
+import chookin.chubot.web.model.JobDetail;
 import cmri.utils.configuration.ConfigManager;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.wall.WallFilter;
@@ -53,8 +54,11 @@ public class ChubotConfig extends JFinalConfig {
         me.add(dataSourceProvider);
         // 配置ActiveRecord插件
         ActiveRecordPlugin activeRecordPlugin = new ActiveRecordPlugin(dataSourceProvider);
-        activeRecordPlugin.addMapping("agent", Agent.class);
-        activeRecordPlugin.addMapping("job", Job.class);// 映射 job 表到 Job 模型
+        activeRecordPlugin.addMapping("agent", Agent.class)
+                .addMapping("job", Job.class) // 映射 job 表到 Job 模型
+                .addMapping("jobDetail", JobDetail.class)
+        ;
+
         me.add(activeRecordPlugin);
     }
 

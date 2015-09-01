@@ -2,7 +2,7 @@ package chookin.chubot.web.model;
 
 import com.jfinal.plugin.activerecord.Model;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -18,7 +18,10 @@ public class Agent extends Model<Agent> {
     }
 
     public static Agent newOne(){
-        return new Agent().set("id", idGen.incrementAndGet()).set("startTime", new Date());
+        return new Agent().set("id", idGen.incrementAndGet()).set("startTime", new Timestamp(System.currentTimeMillis()));
+    }
+    public static int nextId(){
+        return idGen.incrementAndGet();
     }
 
     public static final Agent DAO = new Agent();

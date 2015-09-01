@@ -1,47 +1,98 @@
 package chookin.chubot.server;
 
+import chookin.chubot.common.ChuChannelInboundHandler;
 import chookin.chubot.proto.ChubotProtos.MasterProto;
 import chookin.chubot.web.model.Agent;
+import chookin.chubot.web.model.JobDetail;
+import cmri.etl.job.JobMetric;
+import cmri.utils.lang.JsonHelper;
+import cmri.utils.lang.MapAdapter;
+import cmri.utils.lang.SerializationHelper;
+import cmri.utils.lang.StringHelper;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
-import org.apache.log4j.Logger;
+import org.eclipse.jetty.util.ConcurrentHashSet;
 
+import java.sql.Timestamp;
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 /**
  * Created by zhuyin on 8/14/15.
  */
 @ChannelHandler.Sharable
-public class ChubotServerHandler extends SimpleChannelInboundHandler<MasterProto> {
-    private static final Logger LOG = Logger.getLogger(ChubotServerHandler.class);
-    private final BlockingQueue<MasterProto> answer = new LinkedBlockingQueue<>();
+public class ChubotServerHandler extends ChuChannelInboundHandler{
     private final Map<Channel, Agent> agents = new HashMap<>();
     private final ReadWriteLock agentsLock = new ReentrantReadWriteLock();
-    private final AtomicLong protoId = new AtomicLong();
+    private final Set<String> jars = new ConcurrentHashSet<>();
 
-    public void send(String methodName, String paras){
-        MasterProto proto = MasterProto.newBuilder()
-                .setId(protoId.incrementAndGet())
-                .setMethod(methodName)
-                .setParas(paras)
-                .build();
-        send(proto);
+    public ChubotServerHandler(){
+        super(0);
+    }
+    public ChuChannelInboundHandler addJars(String jars){
+        this.jars.add(jars);
+        return send(getProto("addJars", jars));
     }
 
-    protected void send(MasterProto proto){
+    public void initAgent(ChannelHandlerContext ctx, MasterProto proto){
+        Map<String, String> map = JsonHelper.parseStringMap(proto.getParas());
+        int id = Integer.parseInt(map.get("id"));
+        Timestamp startTime = new Timestamp(Long.parseLong(map.get("startTime")));
+        Agent agent = new Agent().set("id", id)
+                .set("startTime", startTime);
+        addChannel(ctx.channel(), agent);
+    }
+
+    public void commitJob(String para) throws InterruptedException {
+        send(getProto("commitJob", para));
+    }
+    public Collection<Agent> agents(){
+        agentsLock.readLock().lock();
+        try{
+            return new ArrayList<>(agents.values());
+        }finally {
+            agentsLock.readLock().unlock();
+        }
+    }
+    public Collection<JobDetail> getJobs(int agentId, String status) throws InterruptedException {
+        String jobsStr = sendSync(getProto("getJobs", status), agentId).getParas();
+        Collection<JobMetric> jobs = SerializationHelper.deserialize(jobsStr);
+        return  jobs.stream().map(JobDetail::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        super.channelActive(ctx);
+        int id = Agent.nextId();
+        String paras = new MapAdapter<String,String>()
+                .put("id", String.valueOf(id))
+                .toJson();
+        send(ctx, getProto("initAgent", paras));
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        super.channelInactive(ctx);
+        Channel channel = ctx.channel();
+        removeChannel(channel);
+    }
+
+    private MasterProto sendSync(MasterProto proto, int agentId) throws InterruptedException {
+        return sendSync(channel(agentId), proto);
+    }
+
+    @Override
+    protected ChubotServerHandler send(MasterProto proto){
         for(Channel channel: channels()) {
             channel.writeAndFlush(proto);
         }
+        return this;
     }
 
-    public List<Channel> channels(){
+    private List<Channel> channels(){
         agentsLock.readLock().lock();
         try{
             return new ArrayList<>(agents.keySet());
@@ -50,33 +101,36 @@ public class ChubotServerHandler extends SimpleChannelInboundHandler<MasterProto
         }
     }
 
-    public List<Agent> agents(){
+    private Channel channel(int agentId){
         agentsLock.readLock().lock();
         try{
-            return new ArrayList<>(agents.values());
+            for(Map.Entry<Channel, Agent> entry: agents.entrySet()){
+                if(entry.getValue().getInt("id") == agentId){
+                    return entry.getKey();
+                }
+            }
+            return null;
         }finally {
             agentsLock.readLock().unlock();
         }
     }
 
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        super.channelActive(ctx);
-        Channel channel = ctx.channel();
-        Agent agent = Agent.newOne().set("address", channel.remoteAddress().toString());
+    private ChubotServerHandler addChannel(Channel channel, Agent agent){
+        agent.set("address", channel.remoteAddress().toString());
         agentsLock.writeLock().lock();
         try{
             agents.put(channel, agent);
         }finally {
             agentsLock.writeLock().unlock();
         }
-        agent.save();
+        if(!jars.isEmpty()){
+            channel.writeAndFlush(getProto("addJars", StringHelper.join(jars,";")));
+        }
+        agent.update();
+        return this;
     }
 
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        super.channelInactive(ctx);
-        Channel channel = ctx.channel();
+    private ChubotServerHandler removeChannel(Channel channel){
         Agent agent;
         agentsLock.writeLock().lock();
         try{
@@ -85,32 +139,10 @@ public class ChubotServerHandler extends SimpleChannelInboundHandler<MasterProto
         }finally {
             agentsLock.writeLock().unlock();
         }
-        agent.set("endTime", new Date()).update();
+        if(agent != null) {
+            agent.set("endTime", new Date()).update();
+        }
+        return this;
     }
 
-    @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) {
-        ctx.flush();
-    }
-
-    @Override
-    public void channelRegistered(ChannelHandlerContext ctx) throws Exception{
-        super.channelRegistered(ctx);
-    }
-
-    @Override
-    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-        super.channelUnregistered(ctx);
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
-        ctx.close();
-    }
-
-    @Override
-    protected void messageReceived(ChannelHandlerContext channelHandlerContext, MasterProto masterProto) throws Exception {
-        answer.add(masterProto);
-    }
 }

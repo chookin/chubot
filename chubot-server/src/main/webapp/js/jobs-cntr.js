@@ -23,7 +23,7 @@ pagingApp.controller("JobsController", ['$scope', 'JobsService', function ($scop
     //配置分页基本参数
     $scope.paginationConf = {
         currentPage: 1,
-        itemsPerPage: 5,
+        itemsPerPage: 5
     };
 
     var pageHistory = function () {

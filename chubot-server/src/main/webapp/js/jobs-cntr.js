@@ -1,10 +1,16 @@
-myApp.controller("JobsController",  function ($scope, $http, $filter) {
-
-    $scope.commitJob=function($event, newJob){
-        if(!confirm('Commit job: '+ "'" + newJob +"'?")){
+var toogleApp = angular.module("toogleApp", ['chu.toggle'], jsonEnAdaption);
+toogleApp.controller("JobsController",  function ($scope, $http, $filter) {
+    $scope.singleton=false;
+    $scope.chuToggle = function(){
+        console.log("singleton: " + $scope.singleton);
+    };
+    $scope.commitJob=function($event, newJob, singleton){
+        if(!confirm('Commit job: '+ "'" + newJob +"', singleton:"+ singleton + "?")){
             return;
         }
-        var myData = {data: newJob};
+        var obj = angular.fromJson(newJob);
+        obj.singleton = singleton;
+        var myData = {data: angular.toJson(obj)};
         $http.post('/api/spider/job/commitJob',myData)
             .success(function(data, status, headers, config){
                 alert("success to commit job");
@@ -14,11 +20,7 @@ myApp.controller("JobsController",  function ($scope, $http, $filter) {
     };
 });
 
-//called the Angular object to create a module named myApp
 var pagingApp = angular.module("pagingApp", ['tm.pagination'], jsonEnAdaption);
-
-//The $scope is what lets us bind data to elements in the UI.
-//AngularJS $http 是一个用于读取web服务器上数据的服务。
 pagingApp.controller("JobsController", ['$scope', 'JobsService', function ($scope, JobsService) {
     //配置分页基本参数
     $scope.paginationConf = {

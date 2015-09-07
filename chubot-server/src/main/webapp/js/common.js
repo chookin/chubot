@@ -1,6 +1,4 @@
 'use strict';
-//将"use strict"放在脚本文件的第一行，则整个脚本都将以"严格模式"运行。如果这行语句不在第一行，则无效，整个脚本以"正常模式"运行。
-
 var jsonEnAdaption = function($httpProvider) {
     // http://victorblog.com/2012/12/20/make-angularjs-http-service-behave-like-jquery-ajax/
     // Make AngularJS $http service behave like jQuery.ajax()

@@ -26,18 +26,15 @@ public class ChubotConfig extends JFinalConfig {
     }
     /**
      * 在开发模式下，JFinal会对每次请求输出报告，如输出本次请求的Controller，Method以及请求所携带的参数。JFinal支持JSP，Freemarker，Velocity三种常用视图。
-     * @param constants
      */
     @Override
     public void configConstant(Constants constants) {
-        constants.setDevMode(true);
-//        constants.setViewType(ViewType.JSP);
+        constants.setDevMode(ConfigManager.getAsBool("dev", true));
     }
 
     /**
      * 配置访问路由，如下代码配置了将“/about”映射到AboutController 这个控制器。通过以下的配置，http://localhost/hello将访问HelloController.index()方法，而http://localhost/hello/methodName/v0-v1 将访问到HelloController.methodName(v0, v1)方法。
      * JFinal 默认使用减号“-”来分割多个参数值（可通过constants.setUrlParaSeparator(String)设置分隔符），在Controller中可以通过getPara(int index)分别取出这些值。
-     * @param me
      */
     @Override
     public void configRoute(Routes me) {

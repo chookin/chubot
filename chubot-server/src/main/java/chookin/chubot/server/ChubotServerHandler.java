@@ -12,6 +12,7 @@ import cmri.utils.lang.StringHelper;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.commons.lang3.Validate;
 import org.eclipse.jetty.util.ConcurrentHashSet;
 
 import java.sql.Timestamp;
@@ -43,12 +44,22 @@ public class ChubotServerHandler extends ChuChannelInboundHandler{
         Timestamp startTime = new Timestamp(Long.parseLong(map.get("startTime")));
         Agent agent = new Agent().set("id", id)
                 .set("startTime", startTime);
-        addChannel(ctx.channel(), agent);
+        addChannel(ctx.channel(), agent, Boolean.parseBoolean(map.get("newOne")));
     }
 
     public void commitJob(String para) throws InterruptedException {
-        send(getProto("commitJob", para));
+        Validate.notBlank(para, "para");
+        Map<String, String> map = JsonHelper.parseStringMap(para);
+        if ("true".equals(map.get("Singleton") )) {
+            Channel channel = oneChannel();
+            if(channel != null){
+                send(channel, getProto("commitJob", para));
+            }
+        }else{
+            send(getProto("commitJob", para));
+        }
     }
+
     public Collection<Agent> agents(){
         agentsLock.readLock().lock();
         try{
@@ -58,7 +69,11 @@ public class ChubotServerHandler extends ChuChannelInboundHandler{
         }
     }
     public Collection<JobDetail> getJobs(int agentId, String status) throws InterruptedException {
-        String jobsStr = sendSync(getProto("getJobs", status), agentId).getParas();
+        Channel channel = channel(agentId);
+        if(channel == null){
+            return new ArrayList<>();
+        }
+        String jobsStr = sendSync(channel, getProto("getJobs", status)).getParas();
         Collection<JobMetric> jobs = SerializationHelper.deserialize(jobsStr);
         return  jobs.stream().map(JobDetail::new).collect(Collectors.toList());
     }
@@ -80,10 +95,6 @@ public class ChubotServerHandler extends ChuChannelInboundHandler{
         removeChannel(channel);
     }
 
-    private MasterProto sendSync(MasterProto proto, int agentId) throws InterruptedException {
-        return sendSync(channel(agentId), proto);
-    }
-
     @Override
     protected ChubotServerHandler send(MasterProto proto){
         for(Channel channel: channels()) {
@@ -101,6 +112,19 @@ public class ChubotServerHandler extends ChuChannelInboundHandler{
         }
     }
 
+    private Channel oneChannel(){
+        agentsLock.readLock().lock();
+        try{
+            return agents.keySet().iterator().next();
+        }finally {
+            agentsLock.readLock().unlock();
+        }
+    }
+
+    /**
+     *
+     * @return null if nut found.
+     */
     private Channel channel(int agentId){
         agentsLock.readLock().lock();
         try{
@@ -115,7 +139,7 @@ public class ChubotServerHandler extends ChuChannelInboundHandler{
         }
     }
 
-    private ChubotServerHandler addChannel(Channel channel, Agent agent){
+    private ChubotServerHandler addChannel(Channel channel, Agent agent, boolean isNew){
         agent.set("address", channel.remoteAddress().toString());
         agentsLock.writeLock().lock();
         try{
@@ -126,7 +150,11 @@ public class ChubotServerHandler extends ChuChannelInboundHandler{
         if(!jars.isEmpty()){
             channel.writeAndFlush(getProto("addJars", StringHelper.join(jars,";")));
         }
-        agent.update();
+        if(isNew) {
+            agent.save();
+        }else{
+            agent.update();
+        }
         return this;
     }
 
@@ -144,5 +172,4 @@ public class ChubotServerHandler extends ChuChannelInboundHandler{
         }
         return this;
     }
-
 }

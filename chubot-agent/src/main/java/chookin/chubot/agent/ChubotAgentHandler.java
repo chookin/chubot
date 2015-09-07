@@ -46,11 +46,14 @@ public class ChubotAgentHandler extends ChuChannelInboundHandler{
     }
     public void initAgent(ChannelHandlerContext ctx, MasterProto proto){
         Map<String, String> map = JsonHelper.parseStringMap(proto.getParas());
+        boolean newOne = false;
         if(metric.getId()== -1){
             metric.setId(Integer.parseInt(map.get("id")));
+            newOne = true;
         }else{
             map.put("id", String.valueOf(metric.getId()));
         }
+        map.put("newOne", String.valueOf(newOne));
         map.put("startTime", String.valueOf(metric.getStarTime().getTime()));
         send(ctx, getProto("initAgent", JsonHelper.toJson(map), proto.getId()));
     }

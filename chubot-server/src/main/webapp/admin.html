@@ -27,12 +27,13 @@
                         <div class="input-group input-group-lg">
                             <span class="input-group-addon" id="sizing-addon1"></span>
                             <input id="inputJars"  type="text" class="form-control"  ng-model="jars" placeholder="Jars separated by ';'">
-                            <button id="commitJob" type="button" ng-click="addJars($event, jars)">commit</button>
+                            <span class="input-group-btn">
+                                <button id="commitJob" class="btn btn-default" type="button" ng-click="addJars($event, jars)">Add!</button>
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
-
 
             <div class="panel panel-default">
                 <div class="panel-heading">

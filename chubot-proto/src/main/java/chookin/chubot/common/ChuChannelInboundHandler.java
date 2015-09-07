@@ -87,7 +87,10 @@ public abstract class ChuChannelInboundHandler extends SimpleChannelInboundHandl
         }
     }
     protected abstract ChuChannelInboundHandler send(ChubotProtos.MasterProto proto);
-
+    protected ChuChannelInboundHandler send(Channel channel, ChubotProtos.MasterProto proto){
+        channel.writeAndFlush(proto);
+        return this;
+    }
     protected ChuChannelInboundHandler send(ChannelHandlerContext ctx, ChubotProtos.MasterProto proto){
         ctx.writeAndFlush(proto);
         return this;

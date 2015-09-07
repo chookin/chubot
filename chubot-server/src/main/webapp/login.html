@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html; charset=gb2312" http-equiv="Content-Type" />
+    <script src="/lib/jquery/jquery-2.1.4.min.js" type="text/javascript" ></script>
+</head>
+<body>
+<div class="main">
+    <form action="" name="form1" vail="1"  rel="login" method="post">
+        <input type="hidden" name="mode" value="Login"/>
+        <div class="ico user_t"></div>
+        <div class="ico userno">
+            <input type="text" autocomplete='off' name="userno" class="txt" maxlength="30" id="account" errortype="notempty" errmsgtype="1"  tabindex="1" errmsg="用户名不能为空"/>
+        </div>
+        <div class="ico pass_t"></div>
+        <div class="ico password"><input type="password" name="password" class="txt" maxlength="20" id="passwd" errortype="notempty" errmsgtype="1"  tabindex="2" errmsg="密码不能为空"/></div>
+        <div class="push"><input type="submit" class="ico" id="btnMaster"/></div>
+        <div class="retrieve"></div>
+    </form>
+</div>
+<script src = "/js/login.js" type="text/javascript"></script>

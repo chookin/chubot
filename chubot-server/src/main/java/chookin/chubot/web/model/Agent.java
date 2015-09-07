@@ -24,5 +24,6 @@ public class Agent extends Model<Agent> {
         return idGen.incrementAndGet();
     }
 
+
     public static final Agent DAO = new Agent();
 }

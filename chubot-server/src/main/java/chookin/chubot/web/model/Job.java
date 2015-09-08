@@ -2,7 +2,7 @@ package chookin.chubot.web.model;
 
 import com.jfinal.plugin.activerecord.Model;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -22,7 +22,7 @@ public class Job extends Model<Job> {
     }
 
     public static Job newOne(){
-        return new Job().set("id", idGen.incrementAndGet()).set("time", new Date());
+        return new Job().set("id", idGen.incrementAndGet()).set("time", new Timestamp(System.currentTimeMillis()));
     }
 
     public static final Job DAO = new Job();

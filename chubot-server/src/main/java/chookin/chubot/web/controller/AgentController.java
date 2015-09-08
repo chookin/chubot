@@ -22,9 +22,12 @@ public class AgentController extends Controller {
     }
 
     public void agent() throws InterruptedException {
-        Collection<JobDetail> jobs = ChubotServer.instance().handler().getJobs(getParaToInt("id"), getPara("status"));
+        int agentId = getParaToInt("id");
+        Agent agent = ChubotServer.instance().handler().agent(agentId);
+        setAttr("agent", agent);
+        Collection<JobDetail> jobs = ChubotServer.instance().handler().getJobs(agentId, getPara("status"));
         setAttr("items", jobs);
-        renderJson();
+        render("/agent.html");
     }
 
     public void history(){

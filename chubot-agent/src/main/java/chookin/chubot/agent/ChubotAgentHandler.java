@@ -93,6 +93,7 @@ public class ChubotAgentHandler extends ChuChannelInboundHandler{
         }
         Collection<Job> jobs = getJobs(myStatus);
         ArrayList<JobMetric> metrics = new ArrayList<>(jobs.stream().map(Job::metric).collect(Collectors.toList()));
+        // cannot convert the collection to json string, or else it will be failed to parse JobMetric items from the result json string.
         send(ctx, getProto("getJobs", SerializationHelper.serialize(metrics), proto.getId()));
     }
 

@@ -50,7 +50,7 @@ public class ChubotServerHandler extends ChuChannelInboundHandler{
     public void commitJob(String para) throws InterruptedException {
         Validate.notBlank(para, "para");
         Map<String, String> map = JsonHelper.parseStringMap(para);
-        if ("true".equals(map.get("Singleton") )) {
+        if ("true".equals(map.get("singleton") )) {
             Channel channel = oneChannel();
             if(channel != null){
                 send(channel, getProto("commitJob", para));
@@ -59,7 +59,19 @@ public class ChubotServerHandler extends ChuChannelInboundHandler{
             send(getProto("commitJob", para));
         }
     }
-
+    public Agent agent(int agentId){
+        agentsLock.readLock().lock();
+        try{
+            for(Map.Entry<Channel, Agent> entry: agents.entrySet()){
+                if(entry.getValue().getInt("id") == agentId){
+                    return entry.getValue();
+                }
+            }
+            return null;
+        }finally {
+            agentsLock.readLock().unlock();
+        }
+    }
     public Collection<Agent> agents(){
         agentsLock.readLock().lock();
         try{

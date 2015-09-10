@@ -13,10 +13,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.Validate;
-import org.eclipse.jetty.util.ConcurrentHashSet;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class ChubotServerHandler extends ChuChannelInboundHandler{
     private final Map<Channel, Agent> agents = new HashMap<>();
     private final ReadWriteLock agentsLock = new ReentrantReadWriteLock();
-    private final Set<String> jars = new ConcurrentHashSet<>();
+    private final Set<String> jars = new ConcurrentSkipListSet<>();
 
     public ChubotServerHandler(){
         super(0);

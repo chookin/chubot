@@ -1,22 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="/css/base.css" rel="stylesheet">
+
     <meta charset="utf-8">
     <div id="header"></div>
     <title>Jobs of chubot</title>
 </head>
-<!--The ng-app attribute tells Angular which parts of the page it should manage.-->
-<!--we told our ng-app element about the name of our module, myApp.-->
 <body>
 <div class="container-fluid">
     <div id="nav"></div>
     <div ng-app="myApp">
-        <!--By including a controller in the div tag, I’m declaring that this controller will manage everything between <div> and </div>.-->
-        <!--ng-controller 指令定义了应用程序控制器。-->
-        <!--控制器是 JavaScript 对象，由标准的 JavaScript 对象的构造函数创建。-->
-        <!--控制器的 $scope 是控制器所指向的应用程序 HTML 元素。-->
         <div ng-controller="AdminController">
-            <!--The ng-model definition creates data binding between the input field and the value of yourname.-->
             <h1>添加jar到classpath</h1>
             <div class="panel panel-primary">
                 <div class="panel-heading">
@@ -46,12 +43,11 @@
         </div>
     </div>
 </div>
-
-<!--<script src="http://code.jquery.com/jquery-latest.js" type="text/javascript" ></script>-->
-<script src="/lib/jquery/jquery-2.1.4.min.js" type="text/javascript" ></script>
-<script src="/lib/angular/angular-1.4.4.js" type="text/javascript" ></script>
-<script src="/js/common.js" type="text/javascript" ></script>
 <div id="footer"></div>
+
+<script src="/lib/jquery/jquery-2.1.4.min.js" type="text/javascript" ></script>
+<script src="/lib/angular/angular-1.4.4.min.js" type="text/javascript" ></script>
+<script src="/js/common.js" type="text/javascript" ></script>
 <script src="/js/admin-cntr.js" type="text/javascript" ></script>
 <script>
     $(function(){

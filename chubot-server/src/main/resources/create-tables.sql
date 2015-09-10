@@ -1,6 +1,7 @@
 
 # DROP DATABASE chubot;
 create database if not exists `chubot` default character set utf8;
+grant all on *.* to 'chookin'@'localhost' identified by 'winwin';
 
 use chubot;
 

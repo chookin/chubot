@@ -11,13 +11,19 @@ toogleApp.controller("JobsController",  function ($scope, $http, $filter) {
         if(!confirm('Commit job: '+ "'" + newJob +"', singleton:"+ singleton + "?")){
             return;
         }
-        var obj = angular.fromJson(newJob);
+        var obj;
+        try{
+            obj = angular.fromJson(newJob);
+        }catch(e){
+            $scope.alertMsg(AlertType.Warn, "Fail to parse json object from job string '" + newJob + "'.");
+            return;
+        }
         obj.singleton = singleton;
         var myData = {data: angular.toJson(obj)};
         $http.post('/api/spider/job/commitJob',myData)
             .success(function(data, status, headers, config){
                 if(data.error == undefined){
-                    $scope.alertMsg(AlertType.Success, "Success to commit job");
+                    $scope.alertMsg(AlertType.Success, "Success to commit job.");
                 }else {
                     $scope.alertMsg(AlertType.Warn, "Fail to commit job, "+data.error);
                 }

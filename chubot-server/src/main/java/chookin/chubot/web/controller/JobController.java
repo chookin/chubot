@@ -1,6 +1,7 @@
 package chookin.chubot.web.controller;
 
 import chookin.chubot.server.ChubotServer;
+import chookin.chubot.server.exception.AgentException;
 import chookin.chubot.web.model.Job;
 import cmri.utils.lang.JsonHelper;
 import cmri.utils.lang.MapAdapter;
@@ -23,13 +24,17 @@ public class JobController extends Controller {
     }
 
     @Before(POST.class)
-    public void commitJob() throws InterruptedException {
-        String data = getPara("data");
-        if(StringUtils.isNotBlank(data)){
-            Job job = Job.newOne().set("job", getPara("data"));
-            String myData = new MapAdapter<String,String>().put(JsonHelper.parseStringMap(data)).put("id", job.get("id")).toJson();
-            ChubotServer.instance().handler().commitJob(myData);
-            job.save();
+    public void commitJob() {
+        try {
+            String data = getPara("data");
+            if (StringUtils.isNotBlank(data)) {
+                Job job = Job.newOne().set("job", getPara("data"));
+                String myData = new MapAdapter<String, String>().put(JsonHelper.parseStringMap(data)).put("id", job.get("id")).toJson();
+                ChubotServer.instance().handler().commitJob(myData);
+                job.save();
+            }
+        }catch (AgentException ae){
+            setAttr("error", ae.getMessage());
         }
         renderJson();
     }

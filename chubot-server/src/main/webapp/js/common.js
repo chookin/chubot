@@ -49,3 +49,5 @@ var jsonEnAdaption = function($httpProvider) {
 };
 
 var myApp = angular.module("myApp", [], jsonEnAdaption);
+
+var AlertType = {INFO: 0, Success: 1, Warn: 2, Danger: 3};

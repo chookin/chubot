@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>chubot-server</artifactId>
-
+    <packaging>war</packaging>
     <dependencies>
         <dependency>
             <groupId>cmri.cashcow</groupId>
@@ -37,16 +37,19 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
             <version>8.1.8.v20121106</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
             <version>8.1.8.v20121106</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-util</artifactId>
             <version>8.1.8.v20121106</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <!--To fix: SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".-->
@@ -65,7 +68,12 @@
             <artifactId>druid</artifactId>
             <version>1.0.15</version>
         </dependency>
-
+        <dependency>
+            <!-- http://dev.mysql.com/downloads/connector/j/ -->
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.31</version>
+        </dependency>
     </dependencies>
     <build>
         <resources>

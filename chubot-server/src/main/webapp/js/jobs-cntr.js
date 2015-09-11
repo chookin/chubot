@@ -1,6 +1,9 @@
 var toogleApp = angular.module("toogleApp", ['chu.toggle'], jsonEnAdaption);
 toogleApp.controller("JobsController",  function ($scope, $http, $filter) {
+    $scope.newJob = '';
     $scope.singleton=false;
+    $scope.status="alert-info";
+    $scope.isShowAlert = false;
     $scope.chuToggle = function(){
         console.log("singleton: " + $scope.singleton);
     };
@@ -13,10 +16,29 @@ toogleApp.controller("JobsController",  function ($scope, $http, $filter) {
         var myData = {data: angular.toJson(obj)};
         $http.post('/api/spider/job/commitJob',myData)
             .success(function(data, status, headers, config){
-                alert("success to commit job");
-            }).error(function(data,status,headers,config){
-                alert("fail to commit job");
+                if(data.error == undefined){
+                    $scope.alertMsg(AlertType.Success, "Success to commit job");
+                }else {
+                    $scope.alertMsg(AlertType.Warn, "Fail to commit job, "+data.error);
+                }
+            }).error(function(data,status,headers,config){;
+                $scope.alertMsg(AlertType.Warn, "Fail to commit job, "+data.error);
             });
+    };
+    $scope.$watch("newJob", function(newValue){
+        $scope.isShowAlert = false;
+    });
+    $scope.alertMsg = function(type, msg){
+        switch (type){
+            case AlertType.Success:
+                $scope.status = "alert-success";
+                break;
+            case AlertType.Warn:
+                $scope.status = "alert-danger";
+                break;
+        }
+        $scope.isShowAlert = true;
+        $scope.alertInfo =msg;
     };
 });
 

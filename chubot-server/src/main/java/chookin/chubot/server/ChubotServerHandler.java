@@ -2,6 +2,7 @@ package chookin.chubot.server;
 
 import chookin.chubot.common.ChuChannelInboundHandler;
 import chookin.chubot.proto.ChubotProtos.MasterProto;
+import chookin.chubot.server.exception.AgentException;
 import chookin.chubot.web.model.Agent;
 import chookin.chubot.web.model.JobDetail;
 import cmri.etl.job.JobMetric;
@@ -47,13 +48,15 @@ public class ChubotServerHandler extends ChuChannelInboundHandler{
         addChannel(ctx.channel(), agent, Boolean.parseBoolean(map.get("newOne")));
     }
 
-    public void commitJob(String para) throws InterruptedException {
+    public void commitJob(String para) {
         Validate.notBlank(para, "para");
         Map<String, String> map = JsonHelper.parseStringMap(para);
         if ("true".equals(map.get("singleton") )) {
             Channel channel = oneChannel();
             if(channel != null){
                 send(channel, getProto("commitJob", para));
+            }else{
+                throw new AgentException("no agent.");
             }
         }else{
             send(getProto("commitJob", para));
@@ -109,6 +112,9 @@ public class ChubotServerHandler extends ChuChannelInboundHandler{
 
     @Override
     protected ChubotServerHandler send(MasterProto proto){
+        if(channels().isEmpty()){
+            throw new AgentException("no agent.");
+        }
         for(Channel channel: channels()) {
             channel.writeAndFlush(proto);
         }
@@ -127,6 +133,9 @@ public class ChubotServerHandler extends ChuChannelInboundHandler{
     private Channel oneChannel(){
         agentsLock.readLock().lock();
         try{
+            if(agents.isEmpty()){
+                return null;
+            }
             return agents.keySet().iterator().next();
         }finally {
             agentsLock.readLock().unlock();

@@ -1,3 +1,21 @@
+<!-- MarkdownTOC -->
+
+- 编译
+- 调试
+- 运行
+- post example
+- java
+- javascript
+- jquery
+- angular
+    - directive
+- bootstrap
+- http
+    - HTTP Status Code
+- next
+
+<!-- /MarkdownTOC -->
+
 # 编译
 cd ~/project/ub-lab/tagbase/src/utils && mvn install -DskipTests \
 && cd ~/project/ub-lab/tagbase/src/etl-commons && mvn install -DskipTests \
@@ -23,11 +41,11 @@ Profile(separated with space): pom.xml
 点击运行或者调试按钮
 
 # 运行
-mvn jetty:run -DskipTests
+`mvn jetty:run -DskipTests`
 
 # post example
-curl -d "data=/home/work/project/ub-lab/tagbase/src/tagextract/target/tagextract-1.0-SNAPSHOT.jar" http://192.168.80.131:59000/api/spider/job/addjar
-curl -d "data={class:cmri.tagbase.read.BaiduYueduCollection,collect-categories:true,scheduler:cmri.etl.scheduler.RedisPriorityScheduler,proxy.enable:true,download.concurrent.num:10,download.sleepMilliseconds:5000,all:true,since:2970-01-02|000000}" http://192.168.80.131:59000/api/spider/job/commit
+curl -d "data=/home/work/project/ub-lab/tagbase/src/tagextract/target/tagextract-1.0-SNAPSHOT.jar" http://192.168.80.131:59000/jobs/addjar
+curl -d "data={class:cmri.tagbase.read.BaiduYueduCollection,collect-categories:true,scheduler:cmri.etl.scheduler.RedisPriorityScheduler,proxy.enable:true,download.concurrent.num:10,download.sleepMilliseconds:5000,all:true,since:2970-01-02|000000}" http://192.168.80.131:59000/jobs/commit
 
 # java
 getMethodName

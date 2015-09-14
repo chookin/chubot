@@ -20,7 +20,7 @@ toogleApp.controller("JobsController",  function ($scope, $http, $filter) {
         }
         obj.singleton = singleton;
         var myData = {data: angular.toJson(obj)};
-        $http.post('/api/spider/job/commitJob',myData)
+        $http.post('/jobs/commitJob',myData)
             .success(function(data, status, headers, config){
                 if(data.error == undefined){
                     $scope.alertMsg(AlertType.Success, "Success to commit job.");
@@ -83,7 +83,7 @@ pagingApp.controller("JobsController", ['$scope', 'JobsService', function ($scop
 //业务类
 pagingApp.factory('JobsService', ['$http', function ($http) {
     var list = function (postData) {
-        return $http.post('/api/spider/job/history', postData);
+        return $http.post('/jobs/history', postData);
     }
     return {
         list: function (postData) {

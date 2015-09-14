@@ -33,7 +33,7 @@ public class JobController extends Controller {
                 ChubotServer.instance().handler().commitJob(myData);
                 job.save();
             }
-        }catch (AgentException ae){
+        }catch (AgentException ae) {
             setAttr("error", ae.getMessage());
         }
         renderJson();

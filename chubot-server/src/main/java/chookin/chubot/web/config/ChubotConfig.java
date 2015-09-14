@@ -2,9 +2,11 @@ package chookin.chubot.web.config;
 
 import chookin.chubot.server.ChubotServer;
 import chookin.chubot.web.controller.*;
+import chookin.chubot.web.intercepter.LoginInterceptor;
 import chookin.chubot.web.model.Agent;
 import chookin.chubot.web.model.Job;
 import chookin.chubot.web.model.JobDetail;
+import chookin.chubot.web.model.User;
 import cmri.utils.configuration.ConfigManager;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.wall.WallFilter;
@@ -22,14 +24,17 @@ public class ChubotConfig extends JFinalConfig {
     private static final Logger LOG = Logger.getLogger(ChubotConfig.class);
 
     static {
-        ConfigManager.addFile("db.properties");
+        ConfigManager.addFile("constants.properties");
     }
     /**
      * 在开发模式下，JFinal会对每次请求输出报告，如输出本次请求的Controller，Method以及请求所携带的参数。JFinal支持JSP，Freemarker，Velocity三种常用视图。
      */
     @Override
-    public void configConstant(Constants constants) {
-        constants.setDevMode(ConfigManager.getAsBool("dev", true));
+    public void configConstant(Constants me) {
+        me.setDevMode(ConfigManager.getAsBool("devMode", true));
+        me.setError404View("/common/404.html");
+        me.setError500View("/common/500.html");
+        // constants.setMainRenderFactory(new BeetlRenderFactory());
     }
 
     /**
@@ -42,7 +47,8 @@ public class ChubotConfig extends JFinalConfig {
         me.add("/admin", AdminController.class);
         me.add("/agents", AgentController.class);
         me.add("/help", HelpController.class);
-        me.add("/api/spider/job", JobController.class);
+        me.add("/jobs", JobController.class);
+        me.add("/user", UserController.class);
     }
 
     @Override
@@ -51,16 +57,20 @@ public class ChubotConfig extends JFinalConfig {
         me.add(dataSourceProvider);
         // 配置ActiveRecord插件
         ActiveRecordPlugin activeRecordPlugin = new ActiveRecordPlugin(dataSourceProvider);
-        activeRecordPlugin.addMapping("agent", Agent.class)
+        activeRecordPlugin
+                .addMapping("agent", Agent.class)
                 .addMapping("job", Job.class) // 映射 job 表到 Job 模型
                 .addMapping("jobDetail", JobDetail.class)
+                .addMapping("user", User.class)
         ;
 
         me.add(activeRecordPlugin);
     }
 
     @Override
-    public void configInterceptor(Interceptors me) {}
+    public void configInterceptor(Interceptors me) {
+        me.addGlobalActionInterceptor(new LoginInterceptor());
+    }
 
     @Override
     public void configHandler(Handlers me) {}

@@ -58,6 +58,7 @@ public class ChubotConfig extends JFinalConfig {
         // 配置ActiveRecord插件
         ActiveRecordPlugin activeRecordPlugin = new ActiveRecordPlugin(dataSourceProvider);
         activeRecordPlugin
+                .setShowSql(ConfigManager.getAsBool("sql.show"))
                 .addMapping("agent", Agent.class)
                 .addMapping("job", Job.class) // 映射 job 表到 Job 模型
                 .addMapping("jobDetail", JobDetail.class)

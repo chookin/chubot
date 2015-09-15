@@ -1,19 +1,25 @@
-myApp.controller("LoginController", function ($scope, $http) {
+myApp.controller("LoginController", function ($scope, $http, $window) {
     $scope.login = {};
     $scope.isShowAlert = false;
     $scope.status = "alert-danger";
     $scope.loginUser=function(){
-        var myData = {email: $scope.login.email, password: $scope.login.password};
+        var pwd = $scope.login.password;
+        pwd = hex_sha1(pwd);
+        pwd = hex_md5(pwd);
+        console.log(pwd);
+        var myData = {user: $scope.login.user, password: pwd};
         $http.post('/user/login', myData)
-            .success(function(data, status, headers, config){
+            .success(function(data){
                 if(data.error == undefined){
+                    console.log("redirect home page");
+                    $window.location.assign("/");
                 }else {
                     $scope.alertMsg(data.error);
                 }
-            }).error(function(data,status,headers,config){
+            }).error(function(data){
             });
     };
-    $scope.$watch("login.email + login.password", function(newValue){
+    $scope.$watch("login.user + login.password", function(newValue){
         $scope.isShowAlert = false;
     });
     $scope.alertMsg = function(msg){

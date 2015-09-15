@@ -13,15 +13,15 @@ CREATE TABLE `user` (
   `name` varchar(50) NOT NULL COMMENT '昵称',
   `password` char(32) default NULL COMMENT '账户密码',
   `role` tinyint(1) default NULL COMMENT '用户角色：1，管理员',
-  `ustatus` tinyint(1) default 2 COMMENT '账户状态：1，禁用；2，正常启用',
-  `create_time` int(11) unsigned NOT NULL COMMENT '账户的创建时间',
-  `update_time` int(11) unsigned NOT NULL COMMENT '账户信息的修改时间',
-  `last_login_time` int(11) unsigned default '0' COMMENT '用户最后一次登录时间',
+  `ustatus` tinyint(1) default 1 COMMENT '账户状态：0，禁用；1，正常启用',
+  `create_time` timestamp default CURRENT_TIMESTAMP COMMENT '账户的创建时间',
+  `update_time` DATETIME COMMENT '账户信息的修改时间',
+  `last_login_time` DATETIME COMMENT '用户最后一次登录时间',
   `last_login_ip` varchar(40) default NULL COMMENT '用户最后一次登录IP',
-  `login_times` int UNSIGNED NOT NULL DEFAULT 0 COMMENT '登录次数',
+  `login_times` int DEFAULT 0 COMMENT '登录次数',
   PRIMARY KEY  (`id`)
 );
-Insert into user(id, name, email, password,role) values(1,'admin','admin@chu.com', '1b6c4ef06f9035b85d2aaac0f00f5bc1',1);
+Insert into user(id, name, email, password,role) values(1,'admin','admin@chu.com', '0c7540eb7e65b553ec1ba6b20de79608',1);
 
 create table if not exists agent(
   id int not NULL COMMENT 'agent id',

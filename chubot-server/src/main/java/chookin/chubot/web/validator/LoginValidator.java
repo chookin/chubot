@@ -9,13 +9,11 @@ import com.jfinal.validate.Validator;
 public class LoginValidator extends Validator {
     @Override
     protected void validate(Controller c) {
-        validateEmail("email", "msg", "错误的邮箱地址");
-        validateRequired("password", "msg", "密码不能为空");
+        validateRequired("password", "error", "密码不能为空");
     }
 
     @Override
     protected void handleError(Controller c) {
-        c.keepPara("email");
-        c.render("/user/login.html");
+        c.keepPara("user");
     }
 }

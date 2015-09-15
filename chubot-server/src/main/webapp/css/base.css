@@ -6,6 +6,10 @@ body {
 body {
     background: url("/img/page-background.png");
 }
+.navbar-collapse, .container>.navbar-header {
+    margin-right: 0;
+    margin-left: 0;
+}
 .nav > li > a {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 16px;

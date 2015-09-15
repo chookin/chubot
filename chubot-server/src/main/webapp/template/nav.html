@@ -1,9 +1,26 @@
-<nav id="bs-navbar" class="navbar navbar-default navbar-fixed-top">
-    <ul class="nav navbar-nav">
+<nav class="navbar navbar-default ">
+    <ul class="nav nav-tabs">
         <li class="logo-wrapper"><a href="/index.html"><img src="/img/chubot-logo-nav.png" alt="chubot"></a></li>
         <li><a href="/">Jobs</a></li>
         <li><a href="/agents">Agents</a></li>
         <li><a href="/admin">Admin</a></li>
         <li><a href="/help">Help</a></li>
+        <li role="presentation" class="dropdown pull-right">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                User <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="/user/info">
+                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span> Mine
+                </a></li>
+                <li><a href="/user/settings">
+                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> settings
+                </a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="/user/logout">
+                    <span class="glyphicon glyphicon-off" aria-hidden="true"></span> Log out
+                </a></li>
+            </ul>
+        </li>
     </ul>
 </nav>

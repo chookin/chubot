@@ -18,35 +18,32 @@ import java.sql.Timestamp;
  */
 public class UserController extends Controller {
     public void index(){
-        setAttr("user", User.dao.get(getParaToInt(0, 0)));
+        setAttr("user", User.dao.getUser(getParaToInt(0, 0)));
         render("/user/user.html");
     }
 
     @Clear(LoginInterceptor.class)
     @Before({LoginValidator.class, POST.class})
     public void login(){
-        String email = getPara("email");
+        String userIdentify = getPara("user");
         String password = getPara("password");
-        User user = User.dao.getByEmailAndPassword(email, password);
+        User user = User.dao.getUser(userIdentify, password);
         if (user != null){
             user.set("login_times", 1 + user.getInt("login_times"));
             user.set("last_login_time", new Timestamp(System.currentTimeMillis()));
-            String bbsID = email + Const.ID_SEPARATOR + password;
-            setCookie("bbsID", bbsID, 3600*24*30);
+            String userID = userIdentify + Const.ID_SEPARATOR + System.currentTimeMillis();
+            setCookie("userID", userID, 3600 * 24);
             setSessionAttr("user", user);
-            setSessionAttr("userID", user.get("id"));
-            redirect("/");
         }else{
             setAttr("error", "用户名或密码错误");
-            renderJson();
         }
+        renderJson();
     }
 
     public void logout(){
         removeSessionAttr("user");
-        removeSessionAttr("userID");
-        removeCookie("bbsID");
-        redirect("/");
+        removeCookie("userID");
+        redirect("/user/login.html");
     }
 
     @Before(RegistValidator.class)
@@ -59,7 +56,7 @@ public class UserController extends Controller {
 
     @Before(UserUpdateValidator.class)
     public void edit(){
-        setAttr("user", User.dao.get(getParaToInt(0, 0)));
+        setAttr("user", User.dao.getUser(getParaToInt(0, 0)));
         render("/user/edit.html");
     }
 }

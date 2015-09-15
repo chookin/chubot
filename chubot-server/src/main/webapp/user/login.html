@@ -9,7 +9,7 @@
     <title>Jobs of chubot</title>
 </head>
 <body>
-<div class="container-fluid">
+<div class="container">
     <div id="nav"></div>
     <div class="section">
         <div class="row">
@@ -17,12 +17,12 @@
                 <div class="basic-login" ng-app="myApp" >
                     <form name="loginForm" role="form" ng-submit="loginUser()" ng-controller="LoginController">
                         <div class="form-group">
-                            <label for="login-email"><i class="icon-user"></i> <b>Email</b></label>
-                            <input class="form-control" id="login-email" required type="email" ng-model="login.email">
+                            <label for="login-user"><i class="icon-user"></i> <b>User name or Email</b></label>
+                            <input limit-to="32" class="form-control" id="login-user" required ng-model="login.user">
                         </div>
                         <div class="form-group">
                             <label for="login-password"><i class="icon-lock"></i> <b>Password</b></label>
-                            <input limit-to="16" class="form-control" id="login-password" ng-model="login.password" type="password" placeholder="">
+                            <input limit-to="16" class="form-control" id="login-password" required ng-model="login.password" type="password" placeholder="">
                         </div>
                         <div class="form-group">
                             <label class="checkbox">
@@ -49,6 +49,9 @@
 </div>
 <script src="/lib/jquery/jquery-2.1.4.min.js" type="text/javascript" ></script>
 <script src="/lib/angular/angular-1.4.4.min.js" type="text/javascript" ></script>
+<script src="/lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="/lib/crypto/md5.js" type="text/javascript" ></script>
+<script src="/lib/crypto/sha1.js" type="text/javascript" ></script>
 <script src="/js/common.js" type="text/javascript" ></script>
 <script src="/js/login.js" type="text/javascript" ></script>
 <div id="footer"></div>

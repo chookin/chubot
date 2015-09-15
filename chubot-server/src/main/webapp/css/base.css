@@ -1154,19 +1154,22 @@ span.color-red {
     box-shadow: inset 0 1px #fff,0 0 4px #c8cfe6;
 }
 .basic-login form {
-    margin-left: 5px;
+    margin-left: 15px;
 }
 .basic-login label {
     line-height: 30px;
     font-size: 1.2em;
+}
+.basic-login input {
+    line-height: 30px;
+    font-size: 1.25em;
 }
 .basic-login input[type="checkbox"] {
     margin-top: 4px;
 }
 .social-login p {
     text-align: center;
-    font-size: 1.2em;
-    font-style: italic;
+    font-size: 1.25em;
     padding: 20px 0;
 }
 .social-login .social-login-buttons {

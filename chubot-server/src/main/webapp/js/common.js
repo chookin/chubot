@@ -49,5 +49,26 @@ var jsonEnAdaption = function($httpProvider) {
 };
 
 var myApp = angular.module("myApp", [], jsonEnAdaption);
-
+myApp.directive("limitTo", [function() {
+    return {
+        require: 'ngModel',
+        restrict: "A",
+        scope: {
+            ngModel: '='
+        },
+        link: function(scope, elem, attrs, ngModel) {
+            var limit = attrs.limitTo;
+            scope.$watch(function () {
+                return ngModel.$modelValue;
+            }, function(newValue, oldValue){
+                if(newValue == undefined){
+                    return;
+                }
+                if(newValue.length > limit){
+                    scope.ngModel = newValue.substring(0, limit);
+                }
+            }, true);
+        }
+    }
+}]);
 var AlertType = {INFO: 0, Success: 1, Warn: 2, Danger: 3};

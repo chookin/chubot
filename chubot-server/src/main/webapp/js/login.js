@@ -1,6 +1,7 @@
 myApp.controller("LoginController", function ($scope, $http) {
     $scope.login = {};
     $scope.isShowAlert = false;
+    $scope.status = "alert-danger";
     $scope.loginUser=function(){
         var myData = {email: $scope.login.email, password: $scope.login.password};
         $http.post('/user/login', myData)
@@ -16,7 +17,6 @@ myApp.controller("LoginController", function ($scope, $http) {
         $scope.isShowAlert = false;
     });
     $scope.alertMsg = function(msg){
-        $scope.status = "alert-danger";
         $scope.isShowAlert = true;
         $scope.alertInfo =msg;
     };

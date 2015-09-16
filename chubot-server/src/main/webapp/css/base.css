@@ -14,7 +14,25 @@ body {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 16px;
 }
-
+input.captcha {
+    display: inline-block;
+    width: 68%;
+}
+img.captcha {
+    display: inline-block;
+    border-bottom: 1px solid #ddd;
+    vertical-align: top;
+    width: 32%;
+    height: 46px;
+    -moz-transition: border-color 0.15s ease-in-out;
+    -webkit-transition: border-color 0.15s ease-in-out;
+    -o-transition: border-color 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out;
+    -moz-transition: box-shadow 0.15s ease-in-out;
+    -webkit-transition: box-shadow 0.15s ease-in-out;
+    -o-transition: box-shadow 0.15s ease-in-out;
+    transition: box-shadow 0.15s ease-in-out;
+}
 .page-list .pagination {
     float: left;
 }

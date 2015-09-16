@@ -1,5 +1,6 @@
 package chookin.chubot.web.model;
 
+import chookin.chubot.web.jfinal.tablebind.TableBind;
 import cmri.utils.db.JdbcDAO;
 import org.apache.log4j.Logger;
 
@@ -8,6 +9,7 @@ import java.sql.SQLException;
 /**
  * Created by zhuyin on 8/27/15.
  */
+@TableBind(tableName = "agent")
 public class ModelHelper {
     private static final Logger LOG = Logger.getLogger(ModelHelper.class);
     public static Integer getMaxId(String table) {

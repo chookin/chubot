@@ -2,14 +2,15 @@ package chookin.chubot.web.model;
 
 
 import chookin.chubot.web.jfinal.Model;
+import chookin.chubot.web.jfinal.tablebind.TableBind;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
 /**
  * Created by zhuyin on 9/14/15.
  */
+@TableBind(tableName = "user")
 public class User extends Model<User> {
     public static final User dao = new User();
     public User(){
@@ -18,26 +19,30 @@ public class User extends Model<User> {
     public User getUser(int id) {
         return loadModel(id);
     }
+    public User getUser(String identify){
+        if(identify.contains("@")) {
+            return dao.findFirst("select id, name, email, password, loginTimes from user where email=?", identify);
+        }else{
+            return dao.findFirst("select id, name, email, password, loginTimes from user where name=?", identify);
+        }
+    }
     public User getUser(String identify, String password){
         if(identify.contains("@")) {
-            return dao.findFirst("select id, name, email, password, login_times from user where email=? and password=?", identify, password);
+            return dao.findFirst("select id, name, email, password, loginTimes from user where email=? and password=?", identify, password);
         }else{
-            return dao.findFirst("select id, name, email, password, login_times from user where name=? and password=?", identify, password);
+            return dao.findFirst("select id, name, email, password, loginTimes from user where name=? and password=?", identify, password);
         }
     }
 
     public boolean save(){
-        String password = this.getStr("password");
-        this.set("password", crpytoPassword(password)).set("create_time", new Date());
-        removeCache(this.getInt("id"));
-
+        removeCache(this.getLong("id"));
         return super.save();
     }
-    static String crpytoPassword(String password){
-        return DigestUtils.md5Hex(DigestUtils.sha1Hex(password));
+    static String cryptoPassword(String word){
+        return DigestUtils.md5Hex(DigestUtils.sha1Hex(word));
     }
     public boolean update() {
-        this.set("update_time", new Timestamp(System.currentTimeMillis()));
+        this.set("updateTime", new Timestamp(System.currentTimeMillis()));
         return super.update();
     }
     public boolean containEmail(String email) {

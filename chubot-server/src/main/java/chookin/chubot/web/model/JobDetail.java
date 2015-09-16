@@ -1,5 +1,6 @@
 package chookin.chubot.web.model;
 
+import chookin.chubot.web.jfinal.tablebind.TableBind;
 import cmri.etl.job.JobMetric;
 import com.jfinal.plugin.activerecord.Model;
 
@@ -8,6 +9,7 @@ import java.sql.Timestamp;
 /**
  * Created by zhuyin on 8/31/15.
  */
+@TableBind(tableName = "jobDetail")
 public class JobDetail extends Model<JobDetail> {
     public static final JobDetail DAO = new JobDetail();
     public JobDetail(){}

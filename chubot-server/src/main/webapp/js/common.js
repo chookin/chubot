@@ -70,5 +70,18 @@ myApp.directive("limitTo", [function() {
             }, true);
         }
     }
-}]);
+}]).directive('captcha', function() {
+    return {
+        restrict: 'EA',
+        replace: true,
+        template: '<img class="captcha" ng-src="/captcha?width=128&height=45&fontsize=30&time={{time}}" ng-click="reloadCaptcha()" >',
+        link: function(scope, element, attrs, controller) {
+            scope.time = new Date().getTime();
+            scope.reloadCaptcha = function() {
+                console.log("load captcha");
+                return scope.time = new Date().getTime();
+            };
+        }
+    };
+});
 var AlertType = {INFO: 0, Success: 1, Warn: 2, Danger: 3};

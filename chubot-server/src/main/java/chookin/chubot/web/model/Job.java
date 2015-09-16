@@ -1,5 +1,6 @@
 package chookin.chubot.web.model;
 
+import chookin.chubot.web.jfinal.tablebind.TableBind;
 import com.jfinal.plugin.activerecord.Model;
 
 import java.sql.Timestamp;
@@ -8,6 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by zhuyin on 8/20/15.
  */
+@TableBind(tableName = "job")
 public class Job extends Model<Job> {
     private static final AtomicInteger idGen = new AtomicInteger();
     static {

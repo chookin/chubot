@@ -3,28 +3,45 @@ package chookin.chubot.web.config;
 import chookin.chubot.server.ChubotServer;
 import chookin.chubot.web.controller.*;
 import chookin.chubot.web.intercepter.LoginInterceptor;
+import chookin.chubot.web.jfinal.tablebind.SimpleNameStyles;
+import chookin.chubot.web.jfinal.tablebind.TableBindPlugin;
 import chookin.chubot.web.model.Agent;
 import chookin.chubot.web.model.Job;
 import chookin.chubot.web.model.JobDetail;
 import chookin.chubot.web.model.User;
 import cmri.utils.configuration.ConfigManager;
+import cmri.utils.lang.DateHelper;
 import com.alibaba.druid.filter.stat.StatFilter;
 import com.alibaba.druid.wall.WallFilter;
 import com.jfinal.config.*;
 import com.jfinal.core.JFinal;
 import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
+import com.jfinal.plugin.activerecord.CaseInsensitiveContainerFactory;
+import com.jfinal.plugin.activerecord.IDataSourceProvider;
+import com.jfinal.plugin.activerecord.dialect.MysqlDialect;
 import com.jfinal.plugin.c3p0.C3p0Plugin;
 import com.jfinal.plugin.druid.DruidPlugin;
+import com.jfinal.plugin.ehcache.EhCachePlugin;
 import org.apache.log4j.Logger;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Date;
 
 /**
  * Created by zhuyin on 8/19/15.
  */
 public class ChubotConfig extends JFinalConfig {
-    private static final Logger LOG = Logger.getLogger(ChubotConfig.class);
+    private static final Logger LOG;
 
     static {
-        ConfigManager.addFile("constants.properties");
+        try {
+            System.setProperty("hostname.time", InetAddress.getLocalHost().getHostName() + "-" + DateHelper.toString(new Date(), "yyyyMMddHHmmss"));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        ConfigManager.addFile("app.properties");
+        LOG = Logger.getLogger(ChubotConfig.class);
     }
     /**
      * 在开发模式下，JFinal会对每次请求输出报告，如输出本次请求的Controller，Method以及请求所携带的参数。JFinal支持JSP，Freemarker，Velocity三种常用视图。
@@ -46,6 +63,7 @@ public class ChubotConfig extends JFinalConfig {
         me.add("/", IndexController.class);
         me.add("/admin", AdminController.class);
         me.add("/agents", AgentController.class);
+        me.add("/captcha", CaptchaController.class);
         me.add("/help", HelpController.class);
         me.add("/jobs", JobController.class);
         me.add("/user", UserController.class);
@@ -55,19 +73,34 @@ public class ChubotConfig extends JFinalConfig {
     public void configPlugin(Plugins me) {
         DruidPlugin dataSourceProvider = createDruid();
         me.add(dataSourceProvider);
+
+        //Model自动绑定表插件
+        TableBindPlugin tableBindDefault = new TableBindPlugin(dataSourceProvider, SimpleNameStyles.LOWER);
+        tableBindDefault.setContainerFactory(new CaseInsensitiveContainerFactory(true)); //忽略字段大小写
+        // tableBindDefault.addExcludePaths("cn.dreampie.function.shop");
+        // tableBindDefault.addIncludePaths("chookin.chubot.web.model");
+        tableBindDefault.setShowSql(ConfigManager.getAsBool("db.showSql"));
+        tableBindDefault.setDialect(new MysqlDialect());
+        me.add(tableBindDefault);
+
         // 配置ActiveRecord插件
+        // me.add(createActiveRecordPlugin(dataSourceProvider));
+
+        //ehcache缓存
+        me.add(new EhCachePlugin());
+    }
+
+    ActiveRecordPlugin createActiveRecordPlugin(IDataSourceProvider dataSourceProvider){
         ActiveRecordPlugin activeRecordPlugin = new ActiveRecordPlugin(dataSourceProvider);
         activeRecordPlugin
-                .setShowSql(ConfigManager.getAsBool("sql.show"))
+                .setShowSql(ConfigManager.getAsBool("db.showSql"))
                 .addMapping("agent", Agent.class)
                 .addMapping("job", Job.class) // 映射 job 表到 Job 模型
                 .addMapping("jobDetail", JobDetail.class)
                 .addMapping("user", User.class)
         ;
-
-        me.add(activeRecordPlugin);
+        return activeRecordPlugin;
     }
-
     @Override
     public void configInterceptor(Interceptors me) {
         me.addGlobalActionInterceptor(new LoginInterceptor());
@@ -96,19 +129,27 @@ public class ChubotConfig extends JFinalConfig {
 
     private DruidPlugin createDruid(){
         // 配置Druid 数据库连接池插件
-        DruidPlugin dbPlugin = new DruidPlugin(ConfigManager.get("jdbc.url"), ConfigManager.get("jdbc.username"),
-                ConfigManager.get("jdbc.password"));
+        DruidPlugin dbPlugin = new DruidPlugin(ConfigManager.get("db.url"),
+                ConfigManager.get("db.username"),
+                ConfigManager.get("db.password"),
+                ConfigManager.get("db.driverClass")
+        );
+        dbPlugin.setInitialSize(ConfigManager.getAsInteger("db.pool.initialSize"))
+                .setMinIdle(ConfigManager.getAsInteger("db.pool.minIdle"))
+                .setMaxActive(ConfigManager.getAsInteger("db.pool.maxActive"));
+        // StatFilter提供JDBC层的统计信息
+        dbPlugin.addFilter(new StatFilter());
+
         // 设置 状态监听与 sql防御
         WallFilter wall = new WallFilter();
-        wall.setDbType(ConfigManager.get("jdbc.dbtype"));
+        wall.setDbType(ConfigManager.get("db.type"));
         dbPlugin.addFilter(wall);
-        dbPlugin.addFilter(new StatFilter());
         return dbPlugin;
     }
 
     private C3p0Plugin createC3p0(){
-        return new C3p0Plugin(ConfigManager.get("jdbc.url"), ConfigManager.get("jdbc.username"),
-                ConfigManager.get("jdbc.password"));
+        return new C3p0Plugin(ConfigManager.get("db.url"), ConfigManager.get("db.username"),
+                ConfigManager.get("db.password"));
     }
 
     /**

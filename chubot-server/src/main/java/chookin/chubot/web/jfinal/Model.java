@@ -1,7 +1,5 @@
 package chookin.chubot.web.jfinal;
 
-import com.jfinal.plugin.ehcache.CacheKit;
-
 /**
  * Created by zhuyin on 9/14/15.
  */
@@ -10,17 +8,11 @@ public abstract class Model<M extends com.jfinal.plugin.activerecord.Model> exte
     public Model(String name){
         this.name = name;
     }
-    public M loadModel(int id) {
-        final int ID = id;
-        return (M) CacheKit.get(name, ID, () -> {
-            return findById(ID);
-        });
+    public M loadModel(long id) {
+        return findById(id);
     }
 
-    public void removeCache(Integer id){
-        if(id == null){
-            return;
-        }
-        CacheKit.remove(name, id);
+    public void removeCache(Long id){
+
     }
 }

@@ -8,6 +8,7 @@ import chookin.chubot.web.validator.LoginValidator;
 import chookin.chubot.web.validator.RegistValidator;
 import chookin.chubot.web.validator.UserUpdateValidator;
 import cmri.utils.configuration.ConfigManager;
+import cmri.utils.lang.Pair;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Clear;
 import com.jfinal.core.Controller;
@@ -30,9 +31,7 @@ public class UserController extends Controller {
     @Clear(LoginInterceptor.class)
     @Before({LoginValidator.class, POST.class})
     public void login(){
-        if(!validateCaptcha()){
-            setAttr("error", "验证码错误");
-        }else {
+        if (validateCaptcha()) {
             String userIdentify = getPara("user");
             String password = getPara("password");
             User user = User.dao.getUser(userIdentify, password);
@@ -57,10 +56,18 @@ public class UserController extends Controller {
 
     private boolean validateCaptcha(){
         String captcha = getPara("captcha");
-        String code = getSessionAttr(CaptchaRender.DEFAULT_CAPTCHA_MD5_CODE_KEY);
-        if(code != null && code.equalsIgnoreCase(captcha)){
-            return true;
+        Pair<String, Long> pair = getSessionAttr(CaptchaRender.DEFAULT_CAPTCHA_MD5_CODE_KEY);
+        if(pair != null){
+            if(pair.getValue() > System.currentTimeMillis() - 90000) {
+                if (pair.getKey().equalsIgnoreCase(captcha)) {
+                    return true;
+                }
+            }else {
+                setAttr("error", "验证码过期");
+                return false;
+            }
         }
+        setAttr("error", "验证码错误");
         return false;
     }
 

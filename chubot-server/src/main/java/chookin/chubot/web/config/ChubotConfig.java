@@ -40,7 +40,6 @@ public class ChubotConfig extends JFinalConfig {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        ConfigManager.addFile("app.properties");
         LOG = Logger.getLogger(ChubotConfig.class);
     }
     /**

@@ -1,7 +1,6 @@
 package chookin.chubot.web.jfinal.render;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.UnsupportedEncodingException;
@@ -23,7 +22,7 @@ public class MixedCaptchaRender extends CaptchaRender {
     /**
      * 数字和大写字母的生成字典
      */
-    private static final String[] numberCapitalBase = {"3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"};
+    private static final String[] alphanumBase = {"3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"};
     /**
      * 常用汉字集
      */
@@ -57,19 +56,15 @@ public class MixedCaptchaRender extends CaptchaRender {
             String rand = String.valueOf(this.code.charAt(i));
             Color color = new Color(20 + random.nextInt(110), 20 + random.nextInt(110), random.nextInt(110));
             g.setColor(color);
-            //将生成的随机数进行随机缩放并旋转制定角度 PS.建议不要对文字进行缩放与旋转,因为这样图片可能不正常显示
-            /*将文字旋转制定角度*/
-            Graphics2D g2d_word = (Graphics2D) g;
-            AffineTransform trans = new AffineTransform();
             int x = (int) (width/codeNumber * (i + 0.3));
-            int y = height / 2;
-            trans.rotate((45) * 3.14 / 180, x, y);
-            /*缩放文字*/
-            float scaleSize = random.nextFloat() + 0.8f;
-            if (scaleSize > 1f) scaleSize = 1f;
-            trans.scale(scaleSize, scaleSize);
-            g2d_word.setTransform(trans);
-            g.drawString(rand, x, y);
+            int y = (int) (height * 0.8);
+            // 设置字体旋转角度
+            int degree = new Random().nextInt() % 45 * (random.nextInt(2)*2 - 1);
+            // 正向角度
+            g2d.rotate(degree * Math.PI / 180, x, y);
+            g2d.drawString(rand, x, y);
+            // 反向角度
+            g2d.rotate(-degree * Math.PI / 180, x, y);
         }
     }
 
@@ -81,7 +76,7 @@ public class MixedCaptchaRender extends CaptchaRender {
         for(int i=0;i<codeNumber;i++) {
             switch (random.nextInt(2)) {
                 case 1:
-                    ctmp = String.valueOf(numberCapitalBase[random.nextInt(numberCapitalBase.length)]);
+                    ctmp = String.valueOf(alphanumBase[random.nextInt(alphanumBase.length)]);
                     break;
                 default:     //生成汉字
                     ctmp = generateChineseByDict(random);

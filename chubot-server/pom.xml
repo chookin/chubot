@@ -11,6 +11,9 @@
 
     <artifactId>chubot-server</artifactId>
     <packaging>war</packaging>
+    <properties>
+        <jetty.version>9.3.3.v20150827</jetty.version>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>cmri.cashcow</groupId>
@@ -36,20 +39,17 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>8.1.8.v20121106</version>
-            <scope>provided</scope>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-webapp</artifactId>
-            <version>8.1.8.v20121106</version>
-            <scope>provided</scope>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-util</artifactId>
-            <version>8.1.8.v20121106</version>
-            <scope>provided</scope>
+            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <!--To fix: SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".-->

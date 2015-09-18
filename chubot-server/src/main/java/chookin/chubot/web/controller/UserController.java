@@ -58,7 +58,7 @@ public class UserController extends Controller {
         String captcha = getPara("captcha");
         Pair<String, Long> pair = getSessionAttr(CaptchaRender.DEFAULT_CAPTCHA_MD5_CODE_KEY);
         if(pair != null){
-            if(pair.getValue() > System.currentTimeMillis() - 90000) {
+            if(pair.getValue() > System.currentTimeMillis() - ConfigManager.getAsInteger("captcha.expires")*1000) {
                 if (pair.getKey().equalsIgnoreCase(captcha)) {
                     return true;
                 }

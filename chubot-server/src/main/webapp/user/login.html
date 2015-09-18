@@ -16,11 +16,11 @@
                 <div class="basic-login" ng-app="myApp" >
                     <form name="loginForm" role="form" ng-submit="loginUser()" ng-controller="LoginController">
                         <div class="form-group">
-                            <label for="login-user"><i class="icon-user"></i> <b>User name or Email</b></label>
-                            <input limit-to="32" class="form-control" id="login-user" required ng-model="login.user">
+                            <label for="login-user"><i class="icon-user"></i> <b>用户名/邮箱</b></label>
+                            <input limit-to="32" class="form-control" id="login-user" required ng-model="login.user" placeholder="">
                         </div>
                         <div class="form-group">
-                            <label for="login-password"><i class="icon-lock"></i> <b>Password</b></label>
+                            <label for="login-password"><i class="icon-lock"></i> <b>密码</b></label>
                             <input limit-to="16" class="form-control" id="login-password" required ng-model="login.password" type="password" placeholder="">
                         </div>
                         <div class="form-group">
@@ -28,10 +28,10 @@
                         </div>
                         <div class="form-group">
                             <label class="checkbox">
-                                <input type="checkbox" ng-model="login.isRemember"> Remember me
+                                <input type="checkbox" ng-model="login.isRemember"> 记住我
                             </label>
-                            <a href="/user/forgot.html" class="forgot-password">Forgot password?</a>
-                            <button type="submit" class="btn btn-primary pull-right">Login</button>
+                            <a href="/user/forgot.html" class="forgot-password">忘记密码?</a>
+                            <button type="submit" class="btn btn-primary pull-right">登录</button>
                         </div>
                         <div class="alert {{status}}" role="alert" ng-show="isShowAlert">
                             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -43,7 +43,7 @@
             <div class="col-sm-7 social-login">
                 <p>分布式爬虫系统chubot,欢迎使用</p>
                 <div class="not-member">
-                    <p>Not a member? <a href="/user/register.html">Register here</a></p>
+                    <p>不是会员? <a href="/user/register.html">注册</a></p>
                 </div>
             </div>
         </div>

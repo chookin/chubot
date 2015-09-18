@@ -44,7 +44,6 @@ public class JobController extends Controller {
         renderText("Job " + id);
     }
 
-    @Before(POST.class)
     public void history(){
         pageByOffset();
     }

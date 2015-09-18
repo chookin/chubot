@@ -15,13 +15,13 @@ import java.util.Random;
  *
  * http://my.oschina.net/myaniu/blog/142935
  */
-public class SimpleCatchaRender extends CaptchaRender{
+public class AlphanumCatchaRender extends CaptchaRender{
     /**
      * 随机码生成字典
      */
-    private static final String[] strArr = {"3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"};
+    private static final String[] alphanumBase = {"3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "M", "N", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"};
 
-    public SimpleCatchaRender(int codeNumber, int width, int height, int fontSize) {
+    public AlphanumCatchaRender(int codeNumber, int width, int height, int fontSize) {
         super(codeNumber, width, height, fontSize);
     }
 
@@ -30,7 +30,7 @@ public class SimpleCatchaRender extends CaptchaRender{
         Random random = new Random();
         String sRand = "";
         for (int i = 0; i < codeNumber; i++) {
-            String rand = String.valueOf(strArr[random.nextInt(strArr.length)]);
+            String rand = String.valueOf(alphanumBase[random.nextInt(alphanumBase.length)]);
             sRand += rand;
         }
         return sRand;

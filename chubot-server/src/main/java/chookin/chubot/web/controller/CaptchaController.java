@@ -3,6 +3,7 @@ package chookin.chubot.web.controller;
 import chookin.chubot.web.intercepter.LoginInterceptor;
 import chookin.chubot.web.jfinal.render.CaptchaRender;
 import chookin.chubot.web.jfinal.render.MixedCaptchaRender;
+import cmri.utils.configuration.ConfigManager;
 import cmri.utils.lang.Pair;
 import com.jfinal.aop.Clear;
 import com.jfinal.core.Controller;
@@ -16,7 +17,7 @@ public class CaptchaController extends Controller {
         Integer width = getParaToInt("width");
         Integer height = getParaToInt("height");
         Integer fontSize = getParaToInt("fontsize");
-        CaptchaRender img = new MixedCaptchaRender(4, width, height, fontSize);
+        CaptchaRender img = new MixedCaptchaRender(ConfigManager.getAsInteger("captcha.number"), width, height, fontSize);
         this.setSessionAttr(CaptchaRender.DEFAULT_CAPTCHA_MD5_CODE_KEY, new Pair<>(img.getCode(), System.currentTimeMillis()));
         render(img);
     }

@@ -4,6 +4,7 @@ import chookin.chubot.proto.ChubotProtos;
 import cmri.etl.job.Job;
 import cmri.utils.concurrent.ThreadHelper;
 import cmri.utils.configuration.ConfigManager;
+import cmri.utils.lang.DateHelper;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -18,6 +19,8 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import org.apache.log4j.Logger;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -26,7 +29,16 @@ import java.util.Date;
  * Created by zhuyin on 8/14/15.
  */
 public class ChubotAgent implements Runnable{
-    private static final Logger LOG = Logger.getLogger(ChubotAgent.class);
+    private static final Logger LOG;
+
+    static {
+        try {
+            System.setProperty("hostname.time", InetAddress.getLocalHost().getHostName() + "-" + DateHelper.toString(new Date(), "yyyyMMddHHmmss"));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        LOG = Logger.getLogger(ChubotAgent.class);
+    }
     private final EventLoopGroup group = new NioEventLoopGroup();
     // Bootstrap is similar to ServerBootstrap except that it's for non-server channels such as a client-side or connectionless channel.
     private final Bootstrap b = new Bootstrap();
@@ -82,7 +94,7 @@ public class ChubotAgent implements Runnable{
                 } catch (Throwable e) {
                     metric.setStat(AgentMetric.Status.Disconnected);
                 }
-                LOG.info("retry to connect server after " + retryInterval/1000.0 + " seconds");
+                LOG.info("retry to connect server["+serverHost+":"+serverPort + "] after " + retryInterval/1000.0 + " seconds");
                 ThreadHelper.sleep(retryInterval);
             }
         } catch (Throwable e) {

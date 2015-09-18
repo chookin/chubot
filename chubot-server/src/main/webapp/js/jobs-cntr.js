@@ -57,11 +57,11 @@ pagingApp.controller("JobsController", ['$scope', 'JobsService', function ($scop
     };
 
     var pageHistory = function () {
-        var postData = {
-            pageIndex: $scope.paginationConf.currentPage,
-            pageSize: $scope.paginationConf.itemsPerPage
-        };
-        JobsService.list(postData).success(function (data) {
+        var paras = [
+            {name:'pageIndex', val:$scope.paginationConf.currentPage},
+            {name:'pageSize', val:$scope.paginationConf.itemsPerPage}
+        ];
+        JobsService.list(paras).success(function (data) {
             $scope.paginationConf.totalItems = data.total;
             $scope.items = data.items;
         });
@@ -82,9 +82,19 @@ pagingApp.controller("JobsController", ['$scope', 'JobsService', function ($scop
 
 //业务类
 pagingApp.factory('JobsService', ['$http', function ($http) {
-    var list = function (postData) {
-        return $http.post('/jobs/history', postData);
-    }
+    var list = function (paras) {
+        var url = '/jobs/history';
+        if(paras.length > 0){
+            url = url + '?';
+            for(var o in paras){
+                var para = paras[o];
+                url = url + para.name + '=' + para.val + '&';
+            }
+            url = url.substr(0, url.length - 1);
+        }
+        console.log("get history: "+url);
+        return $http.get(url);
+    };
     return {
         list: function (postData) {
             return list(postData);

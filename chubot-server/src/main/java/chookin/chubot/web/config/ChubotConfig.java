@@ -48,8 +48,8 @@ public class ChubotConfig extends JFinalConfig {
     @Override
     public void configConstant(Constants me) {
         me.setDevMode(ConfigManager.getAsBool("devMode", true));
-        me.setError404View("/common/404.html");
-        me.setError500View("/common/500.html");
+        me.setError404View("/view/common/404.html");
+        me.setError500View("/view/common/500.html");
         // constants.setMainRenderFactory(new BeetlRenderFactory());
     }
 

@@ -28,6 +28,5 @@ public class RegistValidator extends Validator {
     @Override
     protected void handleError(Controller c) {
         c.keepModel(User.class);
-        c.render("/user/regist.html");
     }
 }

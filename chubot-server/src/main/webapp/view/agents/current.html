@@ -1,0 +1,29 @@
+<h1>Agents列表</h1>
+<div class="panel panel-primary table-responsive" ng-controller="AgentsController">
+    <div class="panel-body col-lg-2">
+        <button id="refreshAgents" type="button" ng-click="refreshAgents()">
+            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Refresh
+        </button>
+    </div>
+    <table class="table table-striped table-hover table-condensed">
+        <thead>
+        <tr>
+            <th class="col-lg-1">SN</th>
+            <th class="col-lg-1">Id</th>
+            <th class="col-lg-1">Address</th>
+            <th class="col-lg-2">startTime</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="item in items">
+            <td class="col-lg-1">{{$index + 1}}</td>
+            <td class="col-lg-1">
+                <a ng-href="/agents/agent?id={{item.id}}">{{item.id}}</a>
+            </td>
+            <td class="col-lg-1">{{item.address}}</td>
+            <td class="col-lg-2">{{item.startTime}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script src="/js/agents/current.js"></script>

@@ -1,6 +1,7 @@
 package chookin.chubot.web.controller;
 
 import chookin.chubot.web.intercepter.LoginInterceptor;
+import chookin.chubot.web.jfinal.render.AlphanumCatchaRender;
 import chookin.chubot.web.jfinal.render.CaptchaRender;
 import chookin.chubot.web.jfinal.render.MixedCaptchaRender;
 import cmri.utils.configuration.ConfigManager;
@@ -17,7 +18,12 @@ public class CaptchaController extends Controller {
         Integer width = getParaToInt("width");
         Integer height = getParaToInt("height");
         Integer fontSize = getParaToInt("fontsize");
-        CaptchaRender img = new MixedCaptchaRender(ConfigManager.getAsInteger("captcha.number"), width, height, fontSize);
+        CaptchaRender img;
+        if(ConfigManager.getAsBool("captcha.simple", true)){
+            img = new AlphanumCatchaRender(ConfigManager.getAsInteger("captcha.number"), width, height, fontSize);
+        }else {
+            img = new MixedCaptchaRender(ConfigManager.getAsInteger("captcha.number"), width, height, fontSize);
+        }
         this.setSessionAttr(CaptchaRender.DEFAULT_CAPTCHA_MD5_CODE_KEY, new Pair<>(img.getCode(), System.currentTimeMillis()));
         render(img);
     }

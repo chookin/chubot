@@ -48,8 +48,8 @@ var jsonEnAdaption = function($httpProvider) {
     }];
 };
 
-var myApp = angular.module("myApp", [], jsonEnAdaption);
-myApp.directive("limitTo", [function() {
+angular.module('myApp', ['ngRoute','chu.toggle','tm.pagination'], jsonEnAdaption);
+angular.module('myApp').directive("limitTo", [function() {
     return {
         require: 'ngModel',
         restrict: "A",
@@ -83,5 +83,42 @@ myApp.directive("limitTo", [function() {
             };
         }
     };
-});
+}).config(['$routeProvider','$controllerProvider', '$locationProvider', function($routeProvider, $controllerProvider, $locationProvider){
+    $locationProvider.html5Mode(true).hashPrefix('!');
+    angular.module('myApp').registerCtrl = $controllerProvider.register;
+    $routeProvider
+        .when('/jobs', {
+            templateUrl: '/view/jobs/commit.html'
+        }).when('/admin',{
+            templateUrl:'/view/admin/jars.html'
+        }).when('/agents',{
+            templateUrl:'/view/agents/current.html'
+        }).when('/agents/agent',{
+            templateUrl:'/view/agents/agent.html'
+        }).when('/user/login',{
+            templateUrl:'/view/user/login.html'
+        }).when('/user/register',{
+            templateUrl:'/view/user/register.html'
+        }).when('/help',{
+           templateUrl:'/view/help/help.html'
+        }).otherwise({
+            redirectTo: '/jobs'
+        });
+}]).controller("NavController", function ($scope, $rootScope) {
+    $rootScope.myNav = {'show': true};
+    $scope.myNav = $rootScope.myNav;
+}).controller("UserStateController", function ($scope, $http, $window) {
+    $scope.logout = function(){
+        $http.post('/user/doLogout',{})
+            .success(function(data){
+                if(data.error == undefined){
+                    $window.location.href = '/user/login';
+                }else {
+                    alert(data.error);
+                }
+            }).error(function(data){
+            });
+    }
+})
+;
 var AlertType = {INFO: 0, Success: 1, Warn: 2, Danger: 3};

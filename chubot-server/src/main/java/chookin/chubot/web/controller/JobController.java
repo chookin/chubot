@@ -2,11 +2,11 @@ package chookin.chubot.web.controller;
 
 import chookin.chubot.server.ChubotServer;
 import chookin.chubot.server.exception.AgentException;
+import chookin.chubot.web.jfinal.BaseController;
 import chookin.chubot.web.model.Job;
 import cmri.utils.lang.JsonHelper;
 import cmri.utils.lang.MapAdapter;
 import com.jfinal.aop.Before;
-import com.jfinal.core.Controller;
 import com.jfinal.ext.interceptor.POST;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -16,12 +16,8 @@ import java.util.List;
 /**
  * Created by zhuyin on 8/19/15.
  */
-public class JobController extends Controller {
+public class JobController extends BaseController {
     private static final Logger LOG = Logger.getLogger(JobController.class);
-
-    public void index() {
-        render("/jobs.html");
-    }
 
     @Before(POST.class)
     public void commitJob() {

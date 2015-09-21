@@ -1,4 +1,4 @@
-<nav id="header_outer" class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation">
+<nav id="header_outer" class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation" ng-show="myNav.show" ng-controller="NavController" ng-cloak>
     <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-header-collapse">
             <span class="icon-bar"></span>
@@ -10,13 +10,25 @@
     <div class="collapse navbar-collapse navbar-header-collapse">
 
         <ul id="header_menu" class="nav navbar-nav">
-            <li><a href="/">Jobs</a></li>
+            <li role="presentation" class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="/jobs" role="button" aria-haspopup="true" aria-expanded="false">
+                    Jobs <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="/jobs/commit">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span> commit job
+                    </a></li>
+                    <li><a href="/jobs/history">
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> history jobs
+                    </a></li>
+                </ul>
+            </li>
             <li><a href="/agents">Agents</a></li>
             <li><a href="/admin">Admin</a></li>
             <li><a href="/help">Help</a></li>
         </ul>
 
-        <ul class="nav navbar-nav navbar-right ng-scope" ng-controller="user_ctrl" id="header_me">
+        <ul class="nav navbar-nav navbar-right ng-scope" id="header_me" ng-controller="UserStateController">
             <li class="divider-vertical hidden-xs"></li>
             <li role="presentation" class="dropdown pull-right">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
@@ -30,7 +42,7 @@
                         <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> setting
                     </a></li>
                     <li role="separator" class="divider"></li>
-                    <li><a href="/user/logout">
+                    <li><a href="#" ng-click="logout()">
                         <span class="glyphicon glyphicon-off" aria-hidden="true"></span> Log out
                     </a></li>
                 </ul>

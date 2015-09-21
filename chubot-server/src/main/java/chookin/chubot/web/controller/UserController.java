@@ -2,6 +2,7 @@ package chookin.chubot.web.controller;
 
 import chookin.chubot.web.config.Const;
 import chookin.chubot.web.intercepter.LoginInterceptor;
+import chookin.chubot.web.jfinal.BaseController;
 import chookin.chubot.web.jfinal.render.CaptchaRender;
 import chookin.chubot.web.model.User;
 import chookin.chubot.web.validator.LoginValidator;
@@ -11,7 +12,6 @@ import cmri.utils.configuration.ConfigManager;
 import cmri.utils.lang.Pair;
 import com.jfinal.aop.Before;
 import com.jfinal.aop.Clear;
-import com.jfinal.core.Controller;
 import com.jfinal.ext.interceptor.POST;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -22,15 +22,18 @@ import java.sql.Timestamp;
 /**
  * Created by zhuyin on 9/14/15.
  */
-public class UserController extends Controller {
-    public void index(){
-        setAttr("user", User.dao.getUser(getParaToInt(0, 0)));
-        render("/user/user.html");
+public class UserController extends BaseController {
+    @Clear(LoginInterceptor.class)
+    public void login(){
+        index();
     }
-
+    @Clear(LoginInterceptor.class)
+    public void register(){
+        index();
+    }
     @Clear(LoginInterceptor.class)
     @Before({LoginValidator.class, POST.class})
-    public void login(){
+    public void doLogin(){
         if (validateCaptcha()) {
             String userIdentify = getPara("user");
             String password = getPara("password");
@@ -53,7 +56,12 @@ public class UserController extends Controller {
         }
         renderJson();
     }
-
+    @Before(POST.class)
+    public void doLogout(){
+        removeSessionAttr("user");
+        removeCookie("trackId");
+        index();
+    }
     private boolean validateCaptcha(){
         String captcha = getPara("captcha");
         Pair<String, Long> pair = getSessionAttr(CaptchaRender.DEFAULT_CAPTCHA_MD5_CODE_KEY);
@@ -91,11 +99,6 @@ public class UserController extends Controller {
         return ip;
     }
 
-    public void logout(){
-        removeSessionAttr("user");
-        removeCookie("trackId");
-        redirect("/user/login.html");
-    }
 
     @Before(RegistValidator.class)
     public void save(){

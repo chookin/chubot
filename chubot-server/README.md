@@ -54,6 +54,9 @@ getMethodName
 to get current method name,  call Thread.currentThread().getStackTrace()[1].getMethodName()
 # javascript
 for json, must with quotes for key and value except for int or bool; but for java, this is not required.
+
+redirect:
+window.location.href = '/jobs.html';
 # jquery
 http://jquery.com/download/
 jQuery 2.x has the same API as jQuery 1.x, but does not support Internet Explorer 6, 7, or 8. 
@@ -65,10 +68,20 @@ The $scope is what lets us bind data to elements in the UI.
 AngularJS $http 是一个用于读取web服务器上数据的服务。
 http://cdn.bootcss.com/angular.js/1.1.0/angular.min.js
 https://code.angularjs.org/1.4.5/angular-cookies.js
+
+start the 2nd ng-app
+ angular.bootstrap(angular.element("#pagingApp"),["pagingApp"]);
 ## directive
 You should use dash-separated names inside the html and camelCase for the corresponding name in the directive.
 As you can read on the doc: Angular uses name-with-dashes for attribute names and camelCase for the corresponding directive name)
 Here: http://docs.angularjs.org/tutorial/step_00
+
+## route
+angular的route模块是单独出来的.
+因为route是单独的一个模块，所以在咱们实例化app模块的时候，需要在依赖的模块列表中加上route的module名“ngRoute”
+
+## html5
+ to your index.html file, under the <head> section a <base> tag, e.g. <base href="/"> . This tells Angular what is the base path of your app so it would know how to change the browser URL correctly. For example, if your Angular app’s root is under http://www.example.com/app , you should probably have a base tag set to <base href="/app/"> .
 # bootstrap
 http://v3.bootcss.com/
 # http

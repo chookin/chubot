@@ -1,0 +1,29 @@
+<div ng-controller="AdminController">
+    <h1>添加jar到classpath</h1>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h2 class="panel-title">输入</h2>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon" id="sizing-addon1"></span>
+                    <input id="inputJars"  type="text" class="form-control"  ng-model="jars" placeholder="Jars separated by ';'">
+                            <span class="input-group-btn">
+                                <button id="commitJob" class="btn btn-default" type="button" ng-click="addJars($event, jars)">Add!</button>
+                            </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">Example</h2>
+        </div>
+        <div class="panel-body">
+            <pre>/home/work/project/ub-lab/tagbase/src/tagextract/target/tagextract-1.0-SNAPSHOT.jar</pre>
+        </div>
+    </div>
+</div>
+<script src="/js/admin/jars.js"></script>

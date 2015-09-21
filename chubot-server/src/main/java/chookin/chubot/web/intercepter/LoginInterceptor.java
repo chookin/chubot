@@ -21,7 +21,7 @@ public class LoginInterceptor implements Interceptor {
             Controller controller = inv.getController();
             if (controller.getSessionAttr("user") == null) {
                 if (!generateSession(controller)) {
-                    controller.redirect("/user/login.html");
+                    controller.redirect("/user/login");
                     return;
                 }
             }

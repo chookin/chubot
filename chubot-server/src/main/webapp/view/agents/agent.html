@@ -1,0 +1,30 @@
+<div>
+    <h1>Jobs列表</h1>
+    <div class="panel panel-primary table-responsive">
+        <div class="panel-body">
+            <span>Agent Id: ${agent.id}, Address: ${agent.address}</span>
+        </div>
+        <table class="table table-striped table-hover table-condensed">
+            <thead>
+            <tr>
+                <th class="col-lg-1">Id</th>
+                <th class="col-lg-1">status</th>
+                <th class="col-lg-1">startTime</th>
+                <th class="col-lg-1">endTime</th>
+            </tr>
+            </thead>
+            <tbody>
+            <#list items as item>
+                <tr>
+                    <td class="col-lg-1">
+                        <a href="/jobs/job?id=${item.id}">${item.id}</a>
+                    </td>
+                    <td class="col-lg-1">${item.status}</td>
+                    <td class="col-lg-1">${item.startTime}</td>
+                    <td class="col-lg-1">${item.endTime}</td>
+                </tr>
+            </#list>
+            </tbody>
+        </table>
+    </div>
+</div>

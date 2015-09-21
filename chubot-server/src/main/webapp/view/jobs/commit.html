@@ -1,0 +1,16 @@
+<div ng-controller="JobController">
+    <h1>提交新的爬虫任务</h1>
+    <div class="row">
+        <div class="col-lg-12">
+            <input  toggle-checkbox ng-model="singleton" ng-change='chuToggle()' type="checkbox" data-width="200" data-on="只在一个Agent上执行" data-off="多Agent" data-onstyle="success" data-offstyle="info">
+            <div class="input-group input-group-lg">
+                <input id="inputNewJob"  type="text" class="form-control"  ng-model="newJob" placeholder="Input a job...">
+                    <span class="input-group-btn">
+                        <button id="commitJob" class="btn btn-default" type="button" ng-click="commitJob($event, newJob, singleton)">Commit!</button>
+                    </span>
+            </div>
+        </div>
+    </div>
+    <div class="alert {{status}}" role="alert" ng-show="isShowAlert">{{alertInfo}}</div>
+</div>
+<script src="/js/jobs/commit.js"></script>

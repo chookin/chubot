@@ -1,4 +1,4 @@
-myApp.controller("AdminController", function($scope, $http, $filter){
+angular.module('myApp').registerCtrl("AdminController", function($scope, $http, $filter){
     $scope.addJars=function($event, jars){
         var myData = {data: jars};
         $http.post('/admin/addJars', myData)

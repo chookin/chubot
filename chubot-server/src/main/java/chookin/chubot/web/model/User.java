@@ -1,7 +1,7 @@
 package chookin.chubot.web.model;
 
 
-import chookin.chubot.web.jfinal.Model;
+import chookin.chubot.web.jfinal.BaseModel;
 import chookin.chubot.web.jfinal.tablebind.TableBind;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -11,7 +11,7 @@ import java.sql.Timestamp;
  * Created by zhuyin on 9/14/15.
  */
 @TableBind(tableName = "user")
-public class User extends Model<User> {
+public class User extends BaseModel<User> {
     public static final User dao = new User();
     public User(){
         super("user");

@@ -48,7 +48,7 @@ var jsonEnAdaption = function($httpProvider) {
     }];
 };
 
-angular.module('myApp', ['ngRoute','chu.toggle','tm.pagination'], jsonEnAdaption);
+angular.module('myApp', ['ngCookies','ngRoute','chu.toggle','tm.pagination'], jsonEnAdaption);
 angular.module('myApp').directive("limitTo", [function() {
     return {
         require: 'ngModel',
@@ -95,9 +95,12 @@ angular.module('myApp').directive("limitTo", [function() {
 
         }
     };
-}).config(['$routeProvider','$controllerProvider', '$locationProvider', function($routeProvider, $controllerProvider, $locationProvider){
+}).config(function($routeProvider, $controllerProvider, $locationProvider, $compileProvider, $filterProvider, $provide){
     $locationProvider.html5Mode(true).hashPrefix('!');
     angular.module('myApp').registerCtrl = $controllerProvider.register;
+    angular.module('myApp').registerDirective = $compileProvider.directive;
+    angular.module('myApp').registerRoute = $routeProvider.when;
+    angular.module('myApp').registerFilter = $filterProvider.register;
     $routeProvider
         .when('/jobs', {
             templateUrl: '/view/jobs/commit.html'
@@ -117,7 +120,7 @@ angular.module('myApp').directive("limitTo", [function() {
         }).otherwise({
             redirectTo: '/jobs'
         });
-}]).controller("NavController", function ($scope, $rootScope) {
+}).controller("NavController", function ($scope, $rootScope) {
 
 }).controller("UserStateController", function ($scope, $http, $window) {
     $scope.logout = function(){
@@ -138,6 +141,35 @@ angular.module('myApp').directive("limitTo", [function() {
             }
         });
     }
-)
+).factory('rememberMe', function($cookies) {
+        function fetchValue(name) {
+            console.log('name: ' + $cookies.get(name));
+            return $cookies.get(name);
+        }
+        return function(name, values) {
+            if(arguments.length === 1) return fetchValue(name);
+            if(values == ''){
+                $cookies.remove(name);
+                return;
+            }
+            var option = {};
+            var value = values;
+            if(typeof values === 'object') {
+                value = (typeof values.value === 'object') ? angular.toJson(values.value) : values.value;
+                if(values.expires) {
+                    var date = new Date();
+                    date.setTime( date.getTime() + (values.expires * 24 *60 * 60 * 1000));
+                    option.expires = date.toGMTString();
+                }
+                if(values.path){
+                    option.path = values.path;
+                }
+                if(values.secure){
+                    option.secure = true;
+                }
+            }
+            $cookies.put(name, value, option);
+        }
+    })
 ;
 var AlertType = {INFO: 0, Success: 1, Warn: 2, Danger: 3};

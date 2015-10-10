@@ -1,11 +1,29 @@
-angular.module("myApp").registerCtrl("LoginController", function ($scope, $rootScope, $http, $window) {
-    $rootScope.myNavShow = false;
-    $scope.alertPara = {
-        isShowAlert: false,
-        alertInfo: '',
-        status: "alert-danger"
+angular.module("myApp").registerCtrl("LoginController", function ($scope, $rootScope, $http, $window, rememberMe) {
+    $scope.init = function(){
+        $rootScope.myNavShow = false;
+        $scope.alertPara = {
+            isShowAlert: false,
+            alertInfo: '',
+            status: "alert-danger"
+        };
+        $scope.login = {};
+        console.log('load remembered');
+        if (rememberMe('user')) {
+            $scope.login.remember = true;
+            $scope.login.user = rememberMe('user');
+        }else{
+            $scope.login.remember = false;
+        }
+    };
+    $scope.doRemember = function() {
+        if ($scope.login.remember) {
+            rememberMe('user', $scope.login.user);
+        } else {
+            rememberMe('user', '');
+        }
     };
     $scope.loginUser=function(){
+        $scope.doRemember();
         var pwd = $scope.login.password;
         pwd = hex_sha1(pwd);
         pwd = hex_md5(pwd);
@@ -31,4 +49,6 @@ angular.module("myApp").registerCtrl("LoginController", function ($scope, $rootS
         $scope.alertPara.alertInfo = msg;
         $scope.alertPara.isShowAlert = true;
     };
-});
+    $scope.init();
+})
+;

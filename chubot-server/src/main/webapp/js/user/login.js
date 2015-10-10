@@ -1,7 +1,10 @@
 angular.module("myApp").registerCtrl("LoginController", function ($scope, $rootScope, $http, $window) {
-    $rootScope.myNav.show = false;
-    $scope.isShowAlert = false;
-    $scope.status = "alert-danger";
+    $rootScope.myNavShow = false;
+    $scope.alertPara = {
+        isShowAlert: false,
+        alertInfo: '',
+        status: "alert-danger"
+    };
     $scope.loginUser=function(){
         var pwd = $scope.login.password;
         pwd = hex_sha1(pwd);
@@ -22,10 +25,10 @@ angular.module("myApp").registerCtrl("LoginController", function ($scope, $rootS
             });
     };
     $scope.$watch("login.user + login.password", function(newValue){
-        $scope.isShowAlert = false;
+        $scope.alertPara.isShowAlert = false;
     });
     $scope.alertMsg = function(msg){
-        $scope.isShowAlert = true;
-        $scope.alertInfo =msg;
+        $scope.alertPara.alertInfo = msg;
+        $scope.alertPara.isShowAlert = true;
     };
 });

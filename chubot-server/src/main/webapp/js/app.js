@@ -83,6 +83,18 @@ angular.module('myApp').directive("limitTo", [function() {
             };
         }
     };
+}).directive('alertPrompt', function(){
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: '/view/template/alert-prompt.html',
+        scope: {
+            para: '='
+        },
+        link: function(scope){
+
+        }
+    };
 }).config(['$routeProvider','$controllerProvider', '$locationProvider', function($routeProvider, $controllerProvider, $locationProvider){
     $locationProvider.html5Mode(true).hashPrefix('!');
     angular.module('myApp').registerCtrl = $controllerProvider.register;
@@ -96,17 +108,17 @@ angular.module('myApp').directive("limitTo", [function() {
         }).when('/agents/agent',{
             templateUrl:'/view/agents/agent.html'
         }).when('/user/login',{
+            controller: 'LoginController',
             templateUrl:'/view/user/login.html'
         }).when('/user/register',{
             templateUrl:'/view/user/register.html'
         }).when('/help',{
-           templateUrl:'/view/help/help.html'
+            templateUrl:'/view/help/help.html'
         }).otherwise({
             redirectTo: '/jobs'
         });
 }]).controller("NavController", function ($scope, $rootScope) {
-    $rootScope.myNav = {'show': true};
-    $scope.myNav = $rootScope.myNav;
+
 }).controller("UserStateController", function ($scope, $http, $window) {
     $scope.logout = function(){
         $http.post('/user/doLogout',{})
@@ -119,6 +131,13 @@ angular.module('myApp').directive("limitTo", [function() {
             }).error(function(data){
             });
     }
-})
+}).run(function($rootScope){
+        $rootScope.$on('$viewContentLoaded', function(event){
+            if($rootScope.myNavShow == undefined){
+                $rootScope.myNavShow = true;
+            }
+        });
+    }
+)
 ;
 var AlertType = {INFO: 0, Success: 1, Warn: 2, Danger: 3};

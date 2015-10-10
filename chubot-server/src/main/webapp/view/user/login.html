@@ -1,7 +1,7 @@
-<div class="section" ng-controller="LoginController">
+<div class="section">
     <div class="row">
-        <div class="col-sm-5">
-            <div class="basic-login" ng-app="myApp" >
+        <div class="col-sm-5" ng-cloak>
+            <div class="basic-login">
                 <form name="loginForm" role="form" ng-submit="loginUser()">
                     <div class="form-group">
                         <label for="login-user"><i class="icon-user"></i> <b>用户名/邮箱</b></label>
@@ -21,10 +21,7 @@
                         <a href="/view/user/forgot.html" class="forgot-password">忘记密码?</a>
                         <button type="submit" class="btn btn-primary pull-right">登录</button>
                     </div>
-                    <div class="alert {{status}}" role="alert" ng-show="isShowAlert">
-                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                        {{alertInfo}}
-                    </div>
+                    <alert-prompt para="alertPara"></alert-prompt>
                 </form>
             </div>
         </div>

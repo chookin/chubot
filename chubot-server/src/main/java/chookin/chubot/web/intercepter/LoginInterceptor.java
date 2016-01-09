@@ -57,7 +57,7 @@ public class LoginInterceptor implements Interceptor {
             controller.removeCookie("trackId");
             return false;
         }
-        controller.getSession().setMaxInactiveInterval(ConfigManager.getAsInteger("session.maxInactiveInterval"));
+        controller.getSession().setMaxInactiveInterval(ConfigManager.getInt("session.maxInactiveInterval"));
         controller.setSessionAttr("user", user);
         return true;
     }

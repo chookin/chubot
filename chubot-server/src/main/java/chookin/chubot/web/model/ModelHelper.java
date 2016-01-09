@@ -1,7 +1,7 @@
 package chookin.chubot.web.model;
 
-import chookin.chubot.web.jfinal.tablebind.TableBind;
-import cmri.utils.db.JdbcDAO;
+import cmri.utils.web.jfinal.tablebind.TableBind;
+import cmri.utils.dao.JdbcDAO;
 import org.apache.log4j.Logger;
 
 import java.sql.SQLException;

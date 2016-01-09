@@ -4,7 +4,7 @@ import chookin.chubot.proto.ChubotProtos;
 import cmri.etl.job.Job;
 import cmri.utils.concurrent.ThreadHelper;
 import cmri.utils.configuration.ConfigManager;
-import cmri.utils.lang.DateHelper;
+import cmri.utils.lang.TimeHelper;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -33,7 +33,7 @@ public class ChubotAgent implements Runnable{
 
     static {
         try {
-            System.setProperty("hostname.time", InetAddress.getLocalHost().getHostName() + "-" + DateHelper.toString(new Date(), "yyyyMMddHHmmss"));
+            System.setProperty("hostname.time", InetAddress.getLocalHost().getHostName() + "-" + TimeHelper.toString(new Date(), "yyyyMMddHHmmss"));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -43,11 +43,11 @@ public class ChubotAgent implements Runnable{
     // Bootstrap is similar to ServerBootstrap except that it's for non-server channels such as a client-side or connectionless channel.
     private final Bootstrap b = new Bootstrap();
     private String serverHost = ConfigManager.get("server.host", "127.0.0.1");
-    private int serverPort = ConfigManager.getAsInteger("server.port", 58000);
+    private int serverPort = ConfigManager.getInt("server.port", 58000);
     /**
      * If failed to connect server, then retry after an interval. Unit is milliseconds.
      */
-    private int retryInterval = ConfigManager.getAsInteger("retry.interval", 10000);
+    private int retryInterval = ConfigManager.getInt("retry.interval", 10000);
     private final AgentMetric metric = new AgentMetric();
     private final Collection<Job> historyJobs = new ArrayList<>();
 

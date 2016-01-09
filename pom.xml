@@ -13,5 +13,6 @@
         <module>chubot-server</module>
         <module>chubot-agent</module>
         <module>chubot-proto</module>
+        <module>chubot-spider</module>
     </modules>
 </project>

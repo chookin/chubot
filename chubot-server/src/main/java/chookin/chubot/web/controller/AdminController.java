@@ -2,7 +2,7 @@ package chookin.chubot.web.controller;
 
 import chookin.chubot.server.ChubotServer;
 import chookin.chubot.server.exception.AgentException;
-import chookin.chubot.web.jfinal.BaseController;
+import cmri.utils.web.jfinal.BaseController;
 import com.jfinal.aop.Before;
 import com.jfinal.ext.interceptor.POST;
 

@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  */
 public class ChubotServer {
     private static final Logger LOG = Logger.getLogger(ChubotServer.class);
-    private int port = ConfigManager.getAsInteger("server.port", 58000);
+    private int port = ConfigManager.getInt("server.port", 58000);
     private ChannelFuture cf;
     private final ChubotServerHandler handler = new ChubotServerHandler();
     // We are implementing a server-side application in this example, and therefore two NioEventLoopGroup will be used. The first one, often called 'boss', accepts an incoming connection. The second one, often called 'worker', handles the traffic of the accepted connection once the boss accepts the connection and registers the accepted connection to the worker.

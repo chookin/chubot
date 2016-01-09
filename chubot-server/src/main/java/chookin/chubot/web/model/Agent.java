@@ -1,6 +1,6 @@
 package chookin.chubot.web.model;
 
-import chookin.chubot.web.jfinal.tablebind.TableBind;
+import cmri.utils.web.jfinal.tablebind.TableBind;
 import com.jfinal.plugin.activerecord.Model;
 
 import java.sql.Timestamp;

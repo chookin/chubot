@@ -1,8 +1,8 @@
 package chookin.chubot.web.model;
 
 
-import chookin.chubot.web.jfinal.BaseModel;
-import chookin.chubot.web.jfinal.tablebind.TableBind;
+import cmri.utils.web.jfinal.BaseModel;
+import cmri.utils.web.jfinal.tablebind.TableBind;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.sql.Timestamp;

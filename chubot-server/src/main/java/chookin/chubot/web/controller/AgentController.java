@@ -1,7 +1,7 @@
 package chookin.chubot.web.controller;
 
 import chookin.chubot.server.ChubotServer;
-import chookin.chubot.web.jfinal.BaseController;
+import cmri.utils.web.jfinal.BaseController;
 import chookin.chubot.web.model.Agent;
 import chookin.chubot.web.model.JobDetail;
 

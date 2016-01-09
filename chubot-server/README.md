@@ -28,7 +28,7 @@ cd ~/project/ub-lab/tagbase/src/utils && mvn install -DskipTests \
 
 配置Maven：
 File-->setting-->Maven-->
-修改Maven Home Director, User setting file, Locale repostiory;
+修改Maven Home Director, User setting file, Locale repository;
 选择相应的配置就可以；
 
 配置运行环境：

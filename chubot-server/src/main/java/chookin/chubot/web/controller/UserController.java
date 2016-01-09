@@ -2,8 +2,8 @@ package chookin.chubot.web.controller;
 
 import chookin.chubot.web.config.Const;
 import chookin.chubot.web.intercepter.LoginInterceptor;
-import chookin.chubot.web.jfinal.BaseController;
-import chookin.chubot.web.jfinal.render.CaptchaRender;
+import cmri.utils.web.jfinal.BaseController;
+import cmri.utils.web.jfinal.render.CaptchaRender;
 import chookin.chubot.web.model.User;
 import chookin.chubot.web.validator.LoginValidator;
 import chookin.chubot.web.validator.RegistValidator;
@@ -47,8 +47,8 @@ public class UserController extends BaseController {
 
                 removeSessionAttr(CaptchaRender.DEFAULT_CAPTCHA_MD5_CODE_KEY);
 
-                setCookie("trackId", generateTrackId(ip, userIdentify, password), ConfigManager.getAsInteger("cookie.expires"));
-                getSession().setMaxInactiveInterval(ConfigManager.getAsInteger("session.maxInactiveInterval"));
+                setCookie("trackId", generateTrackId(ip, userIdentify, password), ConfigManager.getInt("cookie.expires"));
+                getSession().setMaxInactiveInterval(ConfigManager.getInt("session.maxInactiveInterval"));
                 setSessionAttr("user", user);
             } else {
                 setAttr("error", "用户名或密码错误");
@@ -66,7 +66,7 @@ public class UserController extends BaseController {
         String captcha = getPara("captcha");
         Pair<String, Long> pair = getSessionAttr(CaptchaRender.DEFAULT_CAPTCHA_MD5_CODE_KEY);
         if(pair != null){
-            if(pair.getValue() > System.currentTimeMillis() - ConfigManager.getAsInteger("captcha.expires")*1000) {
+            if(pair.getValue() > System.currentTimeMillis() - ConfigManager.getInt("captcha.expires")*1000) {
                 if (pair.getKey().equalsIgnoreCase(captcha)) {
                     return true;
                 }

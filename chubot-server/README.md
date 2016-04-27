@@ -43,11 +43,11 @@ Profile(separated with space): pom.xml
 # 运行
 `mvn jetty:run -DskipTests`
 
-{"class":"cmri.tagbase.read.BaiduYueduCollection","collect-categories":"true","scheduler":"cmri.etl.scheduler.RedisPriorityScheduler","proxy.enable":"false","download.concurrent.num":"1","download.sleepMilliseconds":"5000","all":"true","since":"2970-01-02|000000","singleton":"true"}
+{"class":"cmri.tagbase.read.BaiduYueduCollection","collect-categories":"true","scheduler":"cmri.etl.scheduler.RedisPriorityScheduler","proxy.enable":"false","download.concurrent.num":"1","spider.download.sleepMilliseconds":"5000","all":"true","since":"2970-01-02|000000","singleton":"true"}
 
 # post example
 curl -d "data=/home/work/project/ub-lab/tagbase/src/tagextract/target/tagextract-1.0-SNAPSHOT.jar" http://192.168.80.131:59000/jobs/addjar
-curl -d "data={class:cmri.tagbase.read.BaiduYueduCollection,collect-categories:true,scheduler:cmri.etl.scheduler.RedisPriorityScheduler,proxy.enable:true,download.concurrent.num:10,download.sleepMilliseconds:5000,all:true,since:2970-01-02|000000}" http://192.168.80.131:59000/jobs/commit
+curl -d "data={class:cmri.tagbase.read.BaiduYueduCollection,collect-categories:true,spider.scheduler:cmri.etl.scheduler.RedisPriorityScheduler,proxy.enable:true,download.concurrent.num:10,spider.download.sleepMilliseconds:5000,all:true,since:2970-01-02|000000}" http://192.168.80.131:59000/jobs/commit
 
 # java
 getMethodName

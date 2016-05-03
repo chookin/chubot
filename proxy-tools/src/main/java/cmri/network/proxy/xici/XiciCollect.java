@@ -6,6 +6,7 @@ import cmri.etl.downloader.CasperJsDownloader;
 import cmri.etl.processor.PageProcessor;
 import cmri.etl.proxy.Proxy;
 import cmri.network.proxy.service.ProxyCollect;
+import cmri.utils.lang.StringHelper;
 import cmri.utils.lang.TimeHelper;
 import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
@@ -79,54 +80,59 @@ public class XiciCollect extends ProxyCollect {
             Elements elements = doc.select("#ip_list > tbody > tr");
             int count = 0;
             for (Element element : elements) {
+                // 第一行为表格标题: 国家	IP地址	端口	位置	是否匿名	类型	速度	连接时间	验证时间
                 if (++count == 1) {
                     continue;
                 }
-                Proxy proxy = new Proxy()
-                        .setHost(getIP(element))
-                        .setPort(getPort(element))
-                        .set("country", getCountry(element))
-                        .set("location", getLocation(element))
-                        .set("highAnonymity", isHighAnonymity(element))
-                        .set("type", getType(element)) // HTTP or HTTPS.
-                        .set("accessTime", getSpeed(element)) // Time usage to access, in seconds.
-                        .set("connectTime", getConnectionTime(element)) // Time usage to establish connection, in seconds
-                        .set("validateTime", getValidateTime(element)); // Time of validate this proxy usability.
-                LOG.trace(proxy);
-                page.addItem(proxy);
+                try {
+                    Proxy proxy = new Proxy()
+                            .setHost(getIP(element))
+                            .setPort(getPort(element))
+                            .set("country", getCountry(element))
+                            .set("location", getLocation(element))
+                            .set("highAnonymity", isHighAnonymity(element))
+                            .set("type", getType(element)) // HTTP or HTTPS.
+                            .set("accessTime", getSpeed(element)) // Time usage to access, in seconds.
+                            .set("connectTime", getConnectionTime(element)) // Time usage to establish connection, in seconds
+                            .set("validateTime", getValidateTime(element)); // Time of validate this proxy usability.
+                    LOG.trace(proxy);
+                    page.addItem(proxy);
+                }catch (Throwable e){
+                    throw new RuntimeException(element.toString(),  e);
+                }
             }
         }
 
         String getCountry(Element element) {
             // <td><img alt="Cn" src="http://fs.xicidaili.com/images/flag/cn.png" /></td>
-            String str = element.select("td:nth-child(2) > img").attr("src");
-            return str.substring(str.lastIndexOf("/") + 1, str.lastIndexOf("."));
+            String str = element.select("td:nth-child(1) > img").attr("src");
+            return StringHelper.parseRegex(str, "/(\\w+).\\w+$", 1);
         }
 
         String getIP(Element element) {
-            return element.select("td:nth-child(3)").text().trim();
+            return element.select("td:nth-child(2)").text().trim();
         }
 
         Integer getPort(Element element) {
-            String port = element.select("td:nth-child(4)").text().trim();
+            String port = element.select("td:nth-child(3)").text().trim();
             return Integer.parseInt(port);
         }
 
         String getLocation(Element element) {
-            return element.select("td:nth-child(5)").text().trim();
+            return element.select("td:nth-child(4)").text().trim();
         }
 
         boolean isHighAnonymity(Element element) {
-            String str = element.select("td:nth-child(6)").text().trim();
+            String str = element.select("td:nth-child(5)").text().trim();
             return str.equals("高匿");
         }
 
         String getType(Element element) {
-            return element.select("td:nth-child(7)").text().trim();
+            return element.select("td:nth-child(6)").text().trim();
         }
 
         Double getSpeed(Element element) {
-            String str = element.select("td:nth-child(8) div").attr("title").trim();
+            String str = element.select("td:nth-child(7) div").attr("title").trim();
             if (str.endsWith("秒")) {
                 str = str.substring(0, str.length() - 2);
                 return Double.parseDouble(str);
@@ -136,7 +142,7 @@ public class XiciCollect extends ProxyCollect {
         }
 
         Double getConnectionTime(Element element) {
-            String str = element.select("td:nth-child(9) div").attr("title").trim();
+            String str = element.select("td:nth-child(8) div").attr("title").trim();
             if (str.endsWith("秒")) {
                 str = str.substring(0, str.length() - 2);
                 return Double.parseDouble(str);
@@ -146,7 +152,7 @@ public class XiciCollect extends ProxyCollect {
         }
 
         Date getValidateTime(Element element) {
-            String str = element.select("td:nth-child(10)").text();
+            String str = element.select("td:nth-child(9)").text();
             // 15-02-12 09:59
             str = "20" + str;
             return TimeHelper.parseDate(str, "yyyy-MM-dd H:m");

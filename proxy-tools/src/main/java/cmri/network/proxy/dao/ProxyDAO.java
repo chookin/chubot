@@ -12,9 +12,11 @@ import java.util.Map;
  */
 public class ProxyDAO extends MongoDAO<Proxy> {
     static final ProxyDAO instance = new ProxyDAO();
+
     public static ProxyDAO getInstance() {
         return instance;
     }
+
     protected ProxyDAO() {
         super("proxy");
     }
@@ -27,8 +29,8 @@ public class ProxyDAO extends MongoDAO<Proxy> {
     @Override
     protected BasicDBObject getBasicDBObject(Proxy entity) {
         BasicDBObject doc = new BasicDBObject();
-        for(Map.Entry<String, Object> entry: entity.toStringMap().entrySet()){
-            if("collection".equals(entry.getKey())){
+        for (Map.Entry<String, Object> entry : entity.toStringMap().entrySet()) {
+            if ("collection".equals(entry.getKey())) {
                 continue;
             }
             doc.put(entry.getKey(), entry.getValue());
@@ -37,14 +39,20 @@ public class ProxyDAO extends MongoDAO<Proxy> {
     }
 
     @Override
-    protected Proxy parse(DBObject dbObject) {
-        if(dbObject == null) return null;
-        return new Proxy()
+    public Proxy parse(DBObject dbObject) {
+        if (dbObject == null) return null;
+        Proxy proxy = new Proxy()
                 .setHost((String) dbObject.get("host"))
                 .setPort((Integer) dbObject.get("port"))
                 .setUser((String) dbObject.get("user"))
-                .setPasswd((String) dbObject.get("passwd"))
-                .set("properties", dbObject.get("properties"))
-                ;
+                .setPasswd((String) dbObject.get("passwd"));
+        Object properties = dbObject.get("properties");
+        if (properties instanceof BasicDBObject) {
+            BasicDBObject myProperties = (BasicDBObject) properties;
+            for (Map.Entry<String, Object> entry : myProperties.entrySet()) {
+                proxy.set(entry.getKey(), entry.getValue());
+            }
+        }
+        return proxy;
     }
 }

@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>cmri.cashcow</groupId>
-            <artifactId>cmri-etl-commons</artifactId>
+            <artifactId>chubot-spider</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>

@@ -1,8 +1,9 @@
 package cmri.etl.common;
 
 import cmri.etl.downloader.Downloader;
-import cmri.etl.downloader.JsoupDownloader;
+import cmri.etl.downloader.HttpClientDownloader;
 import cmri.etl.processor.PageProcessor;
+import cmri.etl.validator.PageValidator;
 import cmri.utils.configuration.ConfigManager;
 import cmri.utils.web.HttpMethod;
 import cmri.utils.web.UrlHelper;
@@ -56,9 +57,14 @@ public class Request implements Comparable, Serializable {
     private Long validPeriod = ConfigManager.getLong("spider.page.validPeriod", Long.MAX_VALUE);
 
     /**
+     * For this request, whether read cache or not.
+     */
+    private boolean cacheReadable = true;
+
+    /**
      * Its custom page downloader.
      */
-    private Downloader downloader = JsoupDownloader.getInstance();
+    private Downloader downloader = HttpClientDownloader.getInstance();
 
     /**
      * Its custom page processor.
@@ -66,12 +72,17 @@ public class Request implements Comparable, Serializable {
     private PageProcessor pageProcessor;
 
     /**
+     * A validator to validate the fetched page resource is usable;
+     */
+    private PageValidator validator;
+
+    /**
      * Store additional information in extras.
      */
     private final Map<String, Object> extras = new HashMap<>();
 
     /**
-     * the file name of this request resource saved to. If not set, then auto generate when get called by #getFilePath.
+     * the file name of this request resource saved to. If not set, then auto generated when get called by {@link Request#getFilePath}.
      */
     private String filePath;
 
@@ -192,6 +203,15 @@ public class Request implements Comparable, Serializable {
         return this;
     }
 
+    public PageValidator getValidator() {
+        return validator;
+    }
+
+    public Request setValidator(PageValidator validator) {
+        this.validator = validator;
+        return this;
+    }
+
     public String getUserAgent() {
         return this.userAgent;
     }
@@ -303,6 +323,13 @@ public class Request implements Comparable, Serializable {
         return this.validPeriod;
     }
 
+    public boolean isCacheReadable() {
+        return cacheReadable;
+    }
+
+    public void setCacheReadable(boolean cacheReadable) {
+        this.cacheReadable = cacheReadable;
+    }
 
     public TargetResource getTarget() {
         return this.target;

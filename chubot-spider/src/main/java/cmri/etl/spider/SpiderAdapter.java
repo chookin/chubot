@@ -12,6 +12,7 @@ import cmri.etl.proxy.ProxyScheduler;
 import cmri.etl.proxy.ProxySchedulerImpl;
 import cmri.etl.scheduler.Scheduler;
 import cmri.etl.spider.monitor.SpiderMonitor;
+import cmri.etl.validator.PageDeniedException;
 import cmri.utils.concurrent.CountableThreadPool;
 import cmri.utils.concurrent.ThreadHelper;
 import cmri.utils.configuration.ConfigManager;
@@ -159,6 +160,7 @@ public class SpiderAdapter implements Spider {
 
     /**
      * 强制使用指定代理
+     *
      * @param proxy 所强制指定的代理
      * @return this
      */
@@ -299,7 +301,7 @@ public class SpiderAdapter implements Spider {
                 default:
                     addRequest(request);
             }
-        } catch (ConnectTimeoutException | UnknownHostException | SocketException | SocketTimeoutException e) {
+        } catch (ConnectTimeoutException | UnknownHostException | SocketException | SocketTimeoutException | PageDeniedException e) {
             onError(request);
             logException(request, e.toString());
             addRequest(request);
@@ -377,19 +379,28 @@ public class SpiderAdapter implements Spider {
             addRequest(request);
             return page;
         }
-        if (!processValidate(page)) {
-            PageProcessor pageProcessor = request.getPageProcessor();
-            if (pageProcessor != null) {
-                pageProcessor.process(page);
-            }
-            doPipeline(page);
-            onSuccess(request);
+        if (processValidate(page)) {
+            throw new PageDeniedException();
         }
+        if (request.getValidator() != null && request.getValidator().checkBeforeProcess(page)) {
+            throw new PageDeniedException();
+        }
+        PageProcessor pageProcessor = request.getPageProcessor();
+        if (pageProcessor != null) {
+            pageProcessor.process(page);
+        }
+        if (request.getValidator() != null && request.getValidator().checkAfterProcess(page)) {
+            throw new PageDeniedException();
+        }
+        doPipeline(page);
+        onSuccess(request);
         addRequest(page);
         return page;
     }
 
     /**
+     * check whether the resource is validation page.
+     *
      * @return true if page is validation page.
      */
     private boolean processValidate(ResultItems page) {
@@ -492,7 +503,8 @@ public class SpiderAdapter implements Spider {
         if (retry(request)) {
             request.incrRetryCount();
             if (request.getRetryCount() > 0) {
-                request.setValidPeriod(0L); // resubmit request, and force to not load from cache.
+                request.setCacheReadable(false); // If resubmit request, force to not read from cache.
+                // request.setValidPeriod(0L); cannot use set valid period to 0, because if valid period is 0, the downloaded web page cannot be saved.
             }
             scheduler.push(request, this);
         }
@@ -500,9 +512,6 @@ public class SpiderAdapter implements Spider {
     }
 
     public boolean retry(Request request) {
-        if (request == null) {
-            return false;
-        }
-        return request.getRetryCount() < ConfigManager.getInt("spider.download.maxRetry", 6);
+        return request != null && request.getRetryCount() < ConfigManager.getInt("spider.download.maxRetry", 6);
     }
 }

@@ -31,6 +31,9 @@ public class Cache {
      * @return true if can use cache.
      */
     public boolean usable() {
+        if(!request.isCacheReadable()){
+            return false;
+        }
         long validateMilliseconds = request.getValidPeriod();
         if (validateMilliseconds == 0L) {
             return false;

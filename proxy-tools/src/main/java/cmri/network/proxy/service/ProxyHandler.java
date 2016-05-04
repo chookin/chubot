@@ -100,6 +100,10 @@ public class ProxyHandler extends BaseOper {
      * @return true if success to access network by this proxy.
      */
     public static boolean validateProxy(Proxy proxy, String url) {
+        // port的取值范围是 0 - 65535(即2的16次方)，0到1024是众所周知的端口（知名端口，常用于系统服务等，例如http服务的端口号是80)。
+        if(proxy.getPort() < 0 || proxy.getPort() > 0xFFFF){
+            return false;
+        }
         if (checkNetwork(proxy, url)) {
             LOG.trace("success to access network on proxy " + proxy);
             return true;

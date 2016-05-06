@@ -29,9 +29,12 @@ public class ProxiesConfiguration {
                 .append("\n");
         String sep = ",";
         for (Proxy proxy : proxies) {
-            strb.append(proxy.getHost()).append(sep)
+            strb.append(proxy.getHost())
+                    .append(sep)
                     .append(proxy.getPort())
-                    .append(proxy.get("weight", 1)).append(sep)
+                    .append(sep)
+                    .append(proxy.get("weight", 1))
+                    .append(sep)
             ;
             if (StringUtils.isNotEmpty(proxy.getUser())) {
                 strb.append(sep)

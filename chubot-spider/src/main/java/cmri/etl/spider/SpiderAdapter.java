@@ -2,7 +2,7 @@ package cmri.etl.spider;
 
 import cmri.etl.common.Request;
 import cmri.etl.common.ResultItems;
-import cmri.etl.common.ValidateHelper;
+import cmri.etl.validator.PageValidateHelper;
 import cmri.etl.pipeline.ConsolePipeline;
 import cmri.etl.pipeline.FilePipeline;
 import cmri.etl.pipeline.Pipeline;
@@ -409,7 +409,7 @@ public class SpiderAdapter implements Spider {
             return false;
         }
         Document doc = (Document) resource;
-        if (!ValidateHelper.isValidationPage(page.getRequest().getUrl(), doc.html())) {
+        if (!PageValidateHelper.isValidationPage(page.getRequest().getUrl(), doc)) {
             return false;
         }
         if (!page.isCacheUsed()) {

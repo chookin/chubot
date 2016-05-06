@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>cmri.cashcow</groupId>
-            <artifactId>cmri-utils</artifactId>
+            <artifactId>chubot-utils</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>

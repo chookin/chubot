@@ -14,6 +14,7 @@
         <module>chubot-agent</module>
         <module>chubot-proto</module>
         <module>chubot-spider</module>
+        <module>chubot-utils</module>
         <module>proxy-tools</module>
     </modules>
 </project>

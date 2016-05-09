@@ -33,8 +33,9 @@ import org.slf4j.LoggerFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -79,13 +80,15 @@ public class HttpClientDownloader implements Downloader {
     }
 
     protected HttpUriRequest getHttpUriRequest(Request request, Spider spider) {
-        String urlEncoded;
+        URL url = request.getURL();
+        URI uri;
         try {
-            urlEncoded = URLEncoder.encode(request.getUrl(), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
+            uri = new URI(url.getProtocol(), url.getHost(), url.getPath(), url.getQuery(), null);
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-        RequestBuilder requestBuilder = selectRequestMethod(request).setUri(urlEncoded);
+
+        RequestBuilder requestBuilder = selectRequestMethod(request).setUri(uri);
 
         for (Map.Entry<String, String> headerEntry : request.getHeaders().entrySet()) {
             requestBuilder.addHeader(headerEntry.getKey(), headerEntry.getValue());

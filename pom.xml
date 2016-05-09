@@ -10,11 +10,11 @@
     <version>1.0</version>
 
     <modules>
+        <module>chubot-utils</module>
+        <module>chubot-spider</module>
+        <module>chubot-proto</module>
         <module>chubot-server</module>
         <module>chubot-agent</module>
-        <module>chubot-proto</module>
-        <module>chubot-spider</module>
-        <module>chubot-utils</module>
         <module>proxy-tools</module>
     </modules>
 </project>

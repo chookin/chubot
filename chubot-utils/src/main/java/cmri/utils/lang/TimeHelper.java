@@ -1,5 +1,7 @@
 package cmri.utils.lang;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -29,7 +31,7 @@ public class TimeHelper {
      * @return 解析到的日期
      */
     public static Date parseDate(String dateDesc) {
-        if (dateDesc == null) {
+        if(StringUtils.isBlank(dateDesc)){
             return null;
         }
         dateDesc = dateDesc.trim();

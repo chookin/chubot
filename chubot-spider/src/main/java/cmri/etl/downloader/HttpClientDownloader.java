@@ -171,9 +171,6 @@ public class HttpClientDownloader implements Downloader {
                 if (metaContent.contains("charset")) {
                     metaContent = metaContent.substring(metaContent.indexOf("charset"), metaContent.length());
                     charset = metaContent.split("=")[1];
-                    if(charset == null){
-                        throw new RuntimeException("fail to parse charset from meta "+ metaContent);
-                    }
                     break;
                 }
                 // 2.2、html5 <meta charset="UTF-8" />
@@ -182,6 +179,9 @@ public class HttpClientDownloader implements Downloader {
                     break;
                 }
             }
+        }
+        if(charset == null){
+            charset = "UTF-8";
         }
         return charset;
     }

@@ -33,6 +33,8 @@ import org.slf4j.LoggerFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -77,7 +79,13 @@ public class HttpClientDownloader implements Downloader {
     }
 
     protected HttpUriRequest getHttpUriRequest(Request request, Spider spider) {
-        RequestBuilder requestBuilder = selectRequestMethod(request).setUri(request.getUrl());
+        String urlEncoded;
+        try {
+            urlEncoded = URLEncoder.encode(request.getUrl(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        RequestBuilder requestBuilder = selectRequestMethod(request).setUri(urlEncoded);
 
         for (Map.Entry<String, String> headerEntry : request.getHeaders().entrySet()) {
             requestBuilder.addHeader(headerEntry.getKey(), headerEntry.getValue());
@@ -181,7 +189,7 @@ public class HttpClientDownloader implements Downloader {
             }
         }
         if(charset == null){
-            charset = "UTF-8";
+            charset = defaultCharset.name();
         }
         return charset;
     }

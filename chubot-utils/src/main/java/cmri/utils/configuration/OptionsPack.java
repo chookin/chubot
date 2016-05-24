@@ -54,7 +54,7 @@ public class OptionsPack {
      * <ul>
      *     <li>if arg is empty, return null</li>
      *     <li>if arg starts with '--' or '-D', then its key and value must be separated by '=', and then if key or value is empty, then return null, or else return pair of key and value</li>
-     *     <li>others, return a pair which key is arg and value is ""</li>
+     *     <li>others, return a pair whose key is arg and value is ""</li>
      * </ul>
      */
     private Pair<String, String> parseArg(String arg){

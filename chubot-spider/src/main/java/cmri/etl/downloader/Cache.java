@@ -2,6 +2,7 @@ package cmri.etl.downloader;
 
 import cmri.etl.common.Request;
 import cmri.etl.spider.Spider;
+import cmri.utils.configuration.ConfigManager;
 
 import java.io.File;
 import java.util.Date;
@@ -31,6 +32,13 @@ public class Cache {
      * @return true if can use cache.
      */
     public boolean usable() {
+        // 优先处理"spider.cache.forced".当其为true时,只要缓存文件存在,则就认为缓存可用
+        if(ConfigManager.getBool("spider.cache.forced", false)){
+            if( new File(this.getFileName()).exists()){
+                return true;
+            }
+        }
+
         if(!request.isCacheReadable()){
             return false;
         }

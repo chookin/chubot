@@ -327,8 +327,9 @@ public class Request implements Comparable, Serializable {
         return cacheReadable;
     }
 
-    public void setCacheReadable(boolean cacheReadable) {
+    public Request setCacheReadable(boolean cacheReadable) {
         this.cacheReadable = cacheReadable;
+        return this;
     }
 
     public TargetResource getTarget() {

@@ -6,6 +6,7 @@ import cmri.etl.dao.UrlFetchedDAO;
 import cmri.etl.proxy.Proxy;
 import cmri.etl.spider.Spider;
 import cmri.etl.spider.SpiderAdapter;
+import cmri.utils.configuration.ConfigManager;
 import cmri.utils.io.FileHelper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -43,7 +44,7 @@ public class CasperJsDownloader implements Downloader {
     private Process getDownloaderProcess(Request request, Spider spider) throws IOException {
         String url = request.getUrl();
         List<String> command = new ArrayList<>();
-        command.add("casperjs");
+        command.add(ConfigManager.get("spider.casperjs.path", "casperjs"));
         command.add(getJsPath(this.script));
         command.add(String.format("--url=%s", url));
         command.add(String.format("--out=%s", request.getFilePath()));

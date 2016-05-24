@@ -11,10 +11,11 @@ public class ConsolePipeline implements Pipeline {
         if (resultItems.isSkip()) {
             return;
         }
-        System.out.println("get page: " + resultItems.getRequest().getUrl());
-        resultItems.getAllFields()
-                .entrySet()
-                .forEach(entry -> System.out.println(entry.getKey() + ":\t" + entry.getValue()));
-        resultItems.getItems().stream().forEach(System.out::println);
+        StringBuilder strb = new StringBuilder();
+        strb.append("get page: ").append(resultItems.getRequest()).append("\n")
+                .append("\t").append("request fields: ").append(resultItems.getAllFields()).append("\n")
+                .append("\t").append("parsed items: ").append(resultItems.getItems()).append("\n")
+                .append("\t").append("generated new requests:").append(resultItems.getTargetRequests());
+        System.out.println(strb.toString());
     }
 }

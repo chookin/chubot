@@ -319,11 +319,19 @@ public class SpiderAdapter implements Spider {
     }
 
     private void logException(Request request, Exception e) {
-        LOG.error("Failed to process " + request + ". ", e);
+        if(retry(request)){
+            LOG.warn("Failed to process " + request + ". ", e);
+        }else {
+            LOG.error("Failed to process " + request + ". ", e);
+        }
     }
 
     private void logException(Request request, String message) {
-        LOG.error("Failed to process " + request + ". " + message);
+        if(retry(request)){
+            LOG.warn("Failed to process " + request + ". " + message);
+        }else {
+            LOG.error("Failed to process " + request + ". " + message);
+        }
     }
 
     /**

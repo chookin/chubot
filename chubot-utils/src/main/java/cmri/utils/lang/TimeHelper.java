@@ -47,7 +47,7 @@ public class TimeHelper {
         if (str != null) {
             return parseDate(str, "y-M-d");
         }
-        str = StringHelper.parseRegex(dateDesc, "(\\d+.\\d+.\\d+)", 1);
+        str = StringHelper.parseRegex(dateDesc, "(\\d+\\.\\d+\\.\\d+)", 1);
         if (str != null) {
             return parseDate(str, "y.M.d");
         }

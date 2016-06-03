@@ -3,6 +3,7 @@ package cmri.etl.common;
 import cmri.utils.lang.MapAdapter;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by chookin on 16/3/8.
@@ -10,7 +11,7 @@ import java.util.Map;
 public class MapEntity extends MapAdapter<String, Object> implements MapItem {
     @Override
     public Map<String, Object> toStringMap() {
-        return super.get();
+        return new TreeMap<>(super.get());
     }
 
     @Override

@@ -59,7 +59,7 @@ public class Request implements Comparable, Serializable {
     /**
      * For this request, whether read cache or not.
      */
-    private boolean cacheReadable = true;
+    private boolean cacheReadable = ConfigManager.getBool("spider.cache.readable", true);
 
     /**
      * Its custom page downloader.

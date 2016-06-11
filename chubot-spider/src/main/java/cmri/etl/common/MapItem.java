@@ -11,4 +11,6 @@ public interface MapItem extends IdItem {
      * @return the result map.
      */
     Map<String, Object> toStringMap();
+
+    Object get(String key);
 }

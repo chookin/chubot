@@ -7,7 +7,7 @@ import java.util.TreeMap;
 /**
  * Created by zhuyin on 8/24/15.
  */
-public class MapAdapter<K extends Object, V extends Object> {
+public class MapAdapter<K, V> {
     private Map<K,V> innerMap;
     public MapAdapter(){
         this.innerMap = new HashMap<>();

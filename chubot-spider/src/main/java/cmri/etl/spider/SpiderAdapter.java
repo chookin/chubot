@@ -52,7 +52,7 @@ public class SpiderAdapter implements Spider {
     /**
      * 抓取间隔,单位毫秒
      */
-    private int sleepMillis;
+    private int sleepMillis = 0;
     private int threadNum;
 
     /**
@@ -86,7 +86,9 @@ public class SpiderAdapter implements Spider {
     }
 
     public SpiderAdapter init(Map<String, String> paras) {
-        this.setSleepMillis(ConfigManager.getInt("spider.download.sleepMillis", paras, 5000));
+        if (paras.containsKey("spider.download.sleepMillis")) {
+            this.setSleepMillis(Integer.parseInt(paras.get("spider.download.sleepMillis")));
+        }
         this.setThreadNum(ConfigManager.getInt("spider.download.concurrent.num", paras, 1));
         return this;
     }
@@ -180,12 +182,17 @@ public class SpiderAdapter implements Spider {
     }
 
     public int getSleepMillis() {
-        return sleepMillis;
+        // 若从未设置过sleepMills,则读取配置.这样做的目的是为了自动加载更改后的配置
+        return sleepMillis == 0 ? getValidSleepMills(ConfigManager.getInt("spider.download.sleepMillis", 5000)) : sleepMillis;
     }
 
     public Spider setSleepMillis(int millis) {
-        this.sleepMillis = millis;
+        this.sleepMillis = getValidSleepMills(millis);
         return this;
+    }
+
+    private int getValidSleepMills(int millis) {
+        return millis <= 0 ? 5000 : millis;
     }
 
     private void checkIfRunning() {
@@ -315,21 +322,21 @@ public class SpiderAdapter implements Spider {
                 return;
             }
         }
-        ThreadHelper.sleep(sleepMillis);
+        ThreadHelper.sleep(getSleepMillis());
     }
 
     private void logException(Request request, Exception e) {
-        if(retry(request)){
+        if (retry(request)) {
             LOG.warn("Failed to process " + request + ". ", e);
-        }else {
+        } else {
             LOG.error("Failed to process " + request + ". ", e);
         }
     }
 
     private void logException(Request request, String message) {
-        if(retry(request)){
+        if (retry(request)) {
             LOG.warn("Failed to process " + request + ". " + message);
-        }else {
+        } else {
             LOG.error("Failed to process " + request + ". " + message);
         }
     }

@@ -50,6 +50,11 @@ public abstract class BaseOper {
         }
     }
 
+    public BaseOper setArg(String key, String val){
+        this.options.put(key, val);
+        return this;
+    }
+
     public BaseOper setArgs(String[] args){
         String[] myArgs = getArgs(args);
         options.put(myArgs);
@@ -61,6 +66,7 @@ public abstract class BaseOper {
         this.options.put(options);
         return this;
     }
+
     public OptionsPack getOptions(){
         return options;
     }

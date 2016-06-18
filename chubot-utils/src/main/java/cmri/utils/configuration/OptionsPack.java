@@ -20,6 +20,11 @@ public class OptionsPack {
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private final NavigableMap<String, String> options = new TreeMap<>();
 
+    public OptionsPack put(String key, String val){
+        this.options.put(key, val);
+        return this;
+    }
+
     public OptionsPack put(Map<String, String> options){
         if(options == null){
             return this;

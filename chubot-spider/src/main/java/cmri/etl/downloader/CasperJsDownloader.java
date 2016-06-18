@@ -2,7 +2,7 @@ package cmri.etl.downloader;
 
 import cmri.etl.common.Request;
 import cmri.etl.common.ResultItems;
-import cmri.etl.dao.UrlFetchedDAO;
+import cmri.etl.dao.UrlDAO;
 import cmri.etl.proxy.Proxy;
 import cmri.etl.spider.Spider;
 import cmri.etl.spider.SpiderAdapter;
@@ -139,7 +139,7 @@ public class CasperJsDownloader implements Downloader {
             Document doc = Jsoup.parse(new File(request.getFilePath()), "utf-8", request.getUrl());
             resultItems.setResource(doc)
                     .setField("skipArchive", true);
-            UrlFetchedDAO.save(request.getUrl());
+            UrlDAO.getInstance().saveFetched(request.getUrl());
         }
         return resultItems;
     }

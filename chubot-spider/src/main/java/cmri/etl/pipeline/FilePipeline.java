@@ -1,7 +1,7 @@
 package cmri.etl.pipeline;
 
 import cmri.etl.common.ResultItems;
-import cmri.etl.dao.UrlFetchedDAO;
+import cmri.etl.dao.UrlDAO;
 import cmri.utils.io.FileHelper;
 
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class FilePipeline implements Pipeline {
 
     private Pipeline saveDocument(ResultItems resultItems) throws IOException {
         FileHelper.save(resultItems.getResource().toString(), getFileName(resultItems));
-        UrlFetchedDAO.save(resultItems.getRequest().getUrl());
+        UrlDAO.getInstance().saveFetched(resultItems.getRequest().getUrl());
         return this;
     }
 

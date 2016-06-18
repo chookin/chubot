@@ -20,6 +20,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class MongoPipeline implements Pipeline {
     private final Log LOG = LogFactory.getLog(MongoPipeline.class);
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
+    /**
+     * 键:collection名称,值:那些属于该collection的记录集
+     */
     private final Map<String, Set<BasicDBObject>> cache = new HashMap<>();
     private final Object master;
     private int cacheSize = 500;
@@ -27,12 +30,10 @@ public class MongoPipeline implements Pipeline {
     private final TimeoutWriteThread timeoutThread;
 
     /**
-     * 一个{@link MongoPipeline}只处理一个主标识的
-     *
-     * @param master 主标识
+     * @param tag 标签,用于标识存储哪些数据
      */
-    public MongoPipeline(Object master) {
-        this.master = master;
+    public MongoPipeline(Object tag) {
+        this.master = tag;
 
         timeoutThread = new TimeoutWriteThread();
         timeoutThread.setDaemon(true);

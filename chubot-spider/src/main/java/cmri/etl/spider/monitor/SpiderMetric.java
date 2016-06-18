@@ -83,16 +83,6 @@ public class SpiderMetric implements SpiderMetricMBean {
     }
 
     @Override
-    public void start() {
-        spider.start();
-    }
-
-    @Override
-    public void stop() {
-        spider.stop();
-    }
-
-    @Override
     public Date getStartTime() {
         return monitorSpiderListener.getStartTime();
     }

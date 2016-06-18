@@ -37,9 +37,5 @@ public interface SpiderMetricMBean extends Serializable{
 
     Collection<String> getFailedUrls();
 
-    void start();
-
-    void stop();
-
     long getPagePerSecond();
 }

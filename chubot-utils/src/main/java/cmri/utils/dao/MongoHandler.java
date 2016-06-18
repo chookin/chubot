@@ -37,31 +37,32 @@ public class MongoHandler {
     }
 
     private static MongoClient createMongo() {
-        MongoClient mongo = null;
-        String host = ConfigManager.get("mongo.host");
-        int port = ConfigManager.getInt("mongo.port");
-        String userName = ConfigManager.get("mongo.user");
+        while (true) {
+            MongoClient mongo;
+            String host = ConfigManager.get("mongo.host");
+            int port = ConfigManager.getInt("mongo.port");
+            String userName = ConfigManager.get("mongo.user");
 
-        try {
-            String password = ConfigManager.get("mongo.password");
-            if (userName == null || userName.isEmpty()) {
-                mongo = new MongoClient(host, port);
-            } else {
-                ServerAddress serverAddress = new ServerAddress(host, port);
-                MongoCredential credential = MongoCredential.createMongoCRCredential(userName, database, password.toCharArray());
-                mongo = new MongoClient(serverAddress, Arrays.asList(credential));
+            try {
+                String password = ConfigManager.get("mongo.password");
+                if (userName == null || userName.isEmpty()) {
+                    mongo = new MongoClient(host, port);
+                } else {
+                    ServerAddress serverAddress = new ServerAddress(host, port);
+                    MongoCredential credential = MongoCredential.createMongoCRCredential(userName, database, password.toCharArray());
+                    mongo = new MongoClient(serverAddress, Collections.singletonList(credential));
+                }
+                mongo.isLocked();
+                return mongo;
+            } catch (MongoTimeoutException mt) {
+                LOG.error(mt.toString());
+                LOG.warn("retry connect mongodb after 5 seconds");
+                ThreadHelper.sleep(5000);
+            } catch (UnknownHostException e) {
+                LOG.fatal(null, e);
+                System.exit(-1);
             }
-            mongo.isLocked();
-        } catch (MongoTimeoutException mt) {
-            LOG.error(mt.toString());
-            LOG.warn("retry connect mongodb after 5 seconds");
-            ThreadHelper.sleep(5000);
-            return createMongo();
-        } catch (UnknownHostException e) {
-            LOG.fatal(null, e);
-            System.exit(-1);
         }
-        return mongo;
     }
 
     private MongoClient getMongo() {
@@ -144,6 +145,7 @@ public class MongoHandler {
      * update by '_id'
      */
     public int updateOrInsert(String collection, DBObject entity) {
+        checkIdFieldExists(entity);
         DBCollection dbCollection = this.getCollection(collection);
         WriteResult writeResult = dbCollection.update(new BasicDBObject("_id", entity.get("_id")), entity, true, false);
         return writeResult.getN();
@@ -159,17 +161,30 @@ public class MongoHandler {
         DBCollection dbCollection = this.getCollection(collection);
         BulkWriteOperation bulkop = dbCollection.initializeOrderedBulkOperation();
         for (DBObject entity : entities) {
-            if(entity.get("_id") == null){
-                throw new RuntimeException("the entity doesn't has '_id' property");
-            }
+            checkIdFieldExists(entity);
             bulkop.find(new BasicDBObject("_id", entity.get("_id"))).upsert().replaceOne(entity);
         }
         BulkWriteResult result = bulkop.execute();
         return result.getModifiedCount() + result.getUpserts().size();
     }
 
-    public void dropField(String collection, String field, DBObject query) {
+    /**
+     * 删除列
+     */
+    public void removeField(String collection, String field, DBObject query) {
         DBCollection dbCollection = this.getCollection(collection);
         dbCollection.update(query, new BasicDBObject("$unset", new BasicDBObject(field, 1)), false, true);
+    }
+
+    public void remove(String collection, String id){
+        DBCollection dbCollection = this.getCollection(collection);
+        dbCollection.remove(new BasicDBObject("_id", id));
+    }
+
+
+    private void checkIdFieldExists(DBObject dbObject){
+        if(!dbObject.containsField("_id")){
+            throw new IllegalArgumentException("There is no field '_id' in DBObject " + dbObject);
+        }
     }
 }

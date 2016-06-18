@@ -92,7 +92,7 @@ public class ChubotAgentHandler extends ChuChannelInboundHandler{
             myStatus = JobMetric.Status.valueOf(status);
         }
         Collection<Job> jobs = getJobs(myStatus);
-        ArrayList<JobMetric> metrics = new ArrayList<>(jobs.stream().map(Job::metric).collect(Collectors.toList()));
+        ArrayList<JobMetric> metrics = new ArrayList<>(jobs.stream().map(Job::getMetric).collect(Collectors.toList()));
         // cannot convert the collection to json string, or else it will be failed to parse JobMetric items from the result json string.
         send(ctx, getProto("getJobs", SerializationHelper.serialize(metrics), proto.getId()));
     }
@@ -103,7 +103,7 @@ public class ChubotAgentHandler extends ChuChannelInboundHandler{
             if(status == null){
                 return new ArrayList<>(historyJobs);
             }else {
-                return historyJobs.stream().filter(job -> job.metric().getStatus().equals(status)).collect(Collectors.toList());
+                return historyJobs.stream().filter(job -> job.getMetric().getStatus().equals(status)).collect(Collectors.toList());
             }
         }finally {
             historyLock.readLock().unlock();

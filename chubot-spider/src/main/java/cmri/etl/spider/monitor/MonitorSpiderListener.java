@@ -1,13 +1,9 @@
 package cmri.etl.spider.monitor;
 
 import cmri.etl.common.Request;
+import cmri.etl.dao.RequestDAO;
 import cmri.etl.spider.Spider;
 import cmri.etl.spider.SpiderListener;
-import cmri.utils.dao.MongoHandler;
-import cmri.utils.lang.JsonHelper;
-import cmri.utils.lang.SerializationHelper;
-import com.mongodb.BasicDBObject;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.Date;
 import java.util.Set;
@@ -29,12 +25,12 @@ public class MonitorSpiderListener implements SpiderListener {
     private final AtomicLong failedCount = new AtomicLong(0);
     private final Set<String> failedUrls = new CopyOnWriteArraySet<>();
 
-    public MonitorSpiderListener(Spider spider){
+    public MonitorSpiderListener(Spider spider) {
         this.spider = spider;
         this.spider.addListener(this);
     }
 
-    public Spider getSpider(){
+    public Spider getSpider() {
         return spider;
     }
 
@@ -56,21 +52,22 @@ public class MonitorSpiderListener implements SpiderListener {
 
     @Override
     public void onError(Spider spider, Request request) {
-        if(spider.retry(request)){
+        if (spider.retry(request)) {
             return;
         }
         failedUrls.add(request.getUrl());
         failedCount.incrementAndGet();
-        dumpFailedRequest(request);
+        RequestDAO.getInstance().saveFailed(request);
     }
 
-    public Date getStartTime(){
+    public Date getStartTime() {
         return startTime;
     }
 
-    public Date getStopTime(){
+    public Date getStopTime() {
         return stopTime;
     }
+
     public AtomicLong getSuccessCount() {
         return successCount;
     }
@@ -81,35 +78,5 @@ public class MonitorSpiderListener implements SpiderListener {
 
     public Set<String> getFailedUrls() {
         return failedUrls;
-    }
-
-    /**
-     * 必须存储{@link Request},因为一个web资源请求不仅包括url,还包括cookie等数据
-     * @param request 需要存储的请求
-     */
-    private void dumpFailedRequest(Request request) {
-        MongoHandler dao = MongoHandler.instance();
-        try{
-            dao.updateOrInsert("requestFailed", getBasicDBObject(request));
-        }finally {
-            dao.close();
-        }
-    }
-
-    private String getId(Request entity) {
-        return DigestUtils.md5Hex(SerializationHelper.serialize(entity));
-    }
-
-    private BasicDBObject getBasicDBObject(Request entity) {
-        BasicDBObject doc = new BasicDBObject();
-        doc.put("_id", getId(entity));
-        doc.put("url", entity.getUrl());
-        doc.put("downloader", entity.getDownloader().getClass().getName());
-        doc.put("pageProcessor", entity.getPageProcessor().getClass().getName());
-        doc.put("priority", entity.getPriority());
-        doc.put("retryCount", entity.getRetryCount());
-        doc.put("properties", JsonHelper.toJson(entity.getExtra()));
-        doc.put("time", new Date());
-        return doc;
     }
 }

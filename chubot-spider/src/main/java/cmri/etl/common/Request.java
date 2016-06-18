@@ -129,6 +129,7 @@ public class Request implements Comparable, Serializable {
      * set the request method to use, GET or POST. Default is GET.
      */
     public Request setMethod(HttpMethod method) {
+        Validate.notNull(method);
         this.method = method;
         return this;
     }
@@ -304,6 +305,11 @@ public class Request implements Comparable, Serializable {
     }
 
 
+    public Request resetRetryCount(){
+        retryCount = -1;
+        return this;
+    }
+
     /**
      * 设置所请求的资源的有效期,过期后将不会被缓存读取;当设置有效为0时,则不再使用本地缓存,也不保存本次请求所下载的资源
      *
@@ -381,7 +387,28 @@ public class Request implements Comparable, Serializable {
         if (!(o instanceof Request)) throw new ClassCastException();
 
         Request request = (Request) o;
-        return getUrl().compareTo(request.getUrl());// todo extras compare
+        int rst = this.getUrl().compareTo(request.getUrl());
+        if (rst != 0) {
+            return rst;
+        }
+        rst = this.method.compareTo(request.getMethod());
+        if (rst != 0) {
+            return rst;
+        }
+        rst = this.headers.toString().compareTo(request.getHeaders().toString());
+        if (rst != 0) {
+            return rst;
+        }
+        rst = this.cookies.toString().compareTo(request.getCookies().toString());
+        if (rst != 0) {
+            return rst;
+        }
+        rst = this.data.toString().compareTo(request.getData().toString());
+        if (rst != 0) {
+            return rst;
+        }
+        rst = this.extras.toString().compareTo(request.getExtra().toString());
+        return rst;
     }
 
 
@@ -391,16 +418,16 @@ public class Request implements Comparable, Serializable {
         if (!(o instanceof Request)) return false;
 
         Request request = (Request) o;
-        return this.URL.equals(request.getURL()) && extras.equals(request.extras);
+        return this.target.equals(request.getTarget())
+                && (this.URL != null ? this.URL.equals(request.getURL()) : request.getURL() == null)
+                && this.method.equals(request.getMethod())
+                && this.headers.equals(request.headers)
+                && this.cookies.equals(request.cookies)
+                && this.data.equals(request.data)
+                && this.extras.equals(request.extras);
 
     }
 
-    @Override
-    public int hashCode() {
-        int result = URL.hashCode();
-        result = 31 * result + extras.hashCode();
-        return result;
-    }
 
     @Override
     public String toString() {

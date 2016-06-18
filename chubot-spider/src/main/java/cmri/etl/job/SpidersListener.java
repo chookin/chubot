@@ -15,7 +15,6 @@ public class SpidersListener implements SpiderListener{
 
     @Override
     public void onStart(Spider spider) {
-        this.job.addSpider(spider);
     }
 
     @Override

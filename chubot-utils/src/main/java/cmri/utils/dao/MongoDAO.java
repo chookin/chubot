@@ -6,7 +6,6 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,14 +34,6 @@ public abstract class MongoDAO<T> extends MongoHandler{
         return this.getDB().getCollection(collectionName);
     }
 
-    public void save(T entity){
-        save(Collections.singleton(entity));
-    }
-
-    public int save(Collection<T> entities) {
-        return updateOrInsert(entities);
-    }
-
     /**
      * If exist a item equals that to save, then not save it.
      */
@@ -59,8 +50,8 @@ public abstract class MongoDAO<T> extends MongoHandler{
         });
     }
 
-    public void dropField(String field, DBObject query) {
-        dropField(this.collectionName, field, query);
+    public void removeField(String field, DBObject query) {
+        removeField(this.collectionName, field, query);
     }
 
     public List<T> find(Map<String, Object> kv) {
